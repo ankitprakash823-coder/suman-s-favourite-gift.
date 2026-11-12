@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>A page of your own</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root { color-scheme: light; font-family: "DM Sans",sans-serif; color: #36362f; --theme-color: #58715b; --desk: color-mix(in srgb,var(--theme-color) 12%,#e8dfce); --paper: color-mix(in srgb,var(--theme-color) 5%,#f7f1e4); --note: color-mix(in srgb,var(--theme-color) 14%,#f9e89e); --script: "Caveat",cursive; background: var(--desk); }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+      .desk { position: relative; display: grid; min-height: 100vh; place-items: center; padding: 34px clamp(14px,4vw,56px); background-color: var(--desk); background-image: radial-gradient(ellipse at 18% 22%,rgba(255,255,255,.47),transparent 38%),radial-gradient(ellipse at 84% 78%,rgba(172,151,111,.14),transparent 38%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E"); background-size: auto,auto,190px 190px; }
+      .scrapbook { position: relative; width: min(1120px,100%); height: min(740px,calc(100vh - 68px)); min-height: 570px; overflow: hidden; border: 1px solid rgba(112,95,64,.19); border-radius: 5px 8px 7px 5px; background-color: var(--paper); background-image: linear-gradient(90deg,transparent 49.8%,rgba(126,111,81,.1) 50%,rgba(255,255,255,.38) 50.2%,transparent 50.55%),radial-gradient(ellipse at 5% 10%,rgba(255,255,255,.7),transparent 45%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E"); background-size: 100% 100%,auto,170px 170px; box-shadow: 0 25px 70px rgba(63,49,28,.2),0 3px 8px rgba(66,52,33,.1),inset 0 0 0 8px rgba(255,255,255,.21); }
+      .scrapbook::before { position: absolute; inset: 12px; border: 1px solid rgba(130,113,81,.13); content: ""; pointer-events: none; }
+      .toolbar { position: absolute; top: 22px; right: 28px; left: 28px; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .brand { display: flex; flex: 0 0 auto; align-items: center; gap: 9px; color: #666252; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid rgba(89,107,81,.3); border-radius: 50%; color: var(--theme-color); font-size: 15px; }
+      .tools { display: flex; justify-content: flex-end; gap: 6px; flex-wrap: wrap; }
+      .tool-button { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid rgba(105,94,70,.2); border-radius: 3px; background: rgba(255,252,244,.82); color: #5b584b; font-size: 11px; cursor: pointer; box-shadow: 0 2px 3px rgba(64,51,30,.04); transition: transform 160ms ease,background 160ms ease; }
+      .tool-button:hover { transform: translateY(-2px); background: #fffaf0; }
+      .tool-icon { color: var(--theme-color); font-size: 14px; line-height: 1; }
+      .file-input { display: none; }
+      .page-title { position: absolute; top: 86px; right: 20px; left: 20px; z-index: 1; color: #817966; font-size: 9px; font-weight: 600; letter-spacing: .25em; text-align: center; text-transform: uppercase; pointer-events: none; }
+      .page-title strong { display: block; margin-top: 7px; color: #47473c; font: 500 clamp(26px,3.8vw,42px)/1.1 "Playfair Display",Georgia,serif; letter-spacing: -.04em; text-transform: none; }
+      .page-title em { display: block; margin-top: 3px; color: #718067; font: 23px var(--script); letter-spacing: 0; text-transform: none; }
+      .canvas-area { position: absolute; inset: 160px 28px 34px; }
+      .empty-hint { position: absolute; top: 50%; left: 50%; width: min(340px,75%); transform: translate(-50%,-50%); color: #8c8574; font: 20px/1.1 var(--script); text-align: center; pointer-events: none; }
+      .item { position: absolute; display: block; touch-action: none; user-select: none; cursor: grab; transform: translate(-50%,-50%) rotate(var(--angle,0deg)); }
+      .item:active { cursor: grabbing; }
+      .item.selected { outline: 2px solid color-mix(in srgb,var(--theme-color) 55%,transparent); outline-offset: 5px; }
+      .note { width: 180px; min-height: 100px; padding: 14px 16px 13px; background: var(--note); color: #4a473b; box-shadow: 1px 5px 9px rgba(69,54,25,.16); }
+      .note::after { position: absolute; right: 0; bottom: 0; width: 0; height: 0; border-bottom: 14px solid rgba(181,154,83,.22); border-left: 14px solid transparent; content: ""; pointer-events: none; }
+      .note-lavender { background: #e6dcf3; }
+      .note-rose { background: #f5dcd9; }
+      .note-mint { background: #deebdc; }
+      .note-sky { background: #dce8f1; }
+      .note-date { margin-bottom: 4px; color: rgba(74,71,59,.66); font: 14px var(--script); }
+      .note-text { overflow-wrap: anywhere; color: #4a473b; font: 21px/1.05 var(--script); white-space: pre-wrap; }
+      .note-sign { margin-top: 5px; color: #718067; font: 18px var(--script); text-align: right; }
+      .photo { width: var(--media-width,186px); padding: 9px 9px 36px; background: #fffdf6; box-shadow: 0 5px 15px rgba(52,44,30,.2); }
+      .photo img,.photo video { display: block; width: 100%; aspect-ratio: 1.12; object-fit: cover; background: #d7d0bc; }
+      .photo.video-photo { padding-bottom: 36px; }
+      .photo-caption { position: absolute; right: 5px; bottom: 1px; left: 5px; overflow: hidden; color: #575348; font: 19px var(--script); text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+      .sticker { display: grid; width: 75px; height: 75px; place-items: center; filter: drop-shadow(1px 3px 2px rgba(50,42,30,.14)); font-size: 55px; line-height: 1; }
+      .custom-sticker { display: block; width: 76px; height: 76px; object-fit: contain; pointer-events: none; }
+      .tape { width: 104px; height: 28px; border: 1px solid rgba(163,128,77,.12); background: repeating-linear-gradient(45deg,rgba(250,222,169,.72),rgba(250,222,169,.72) 5px,rgba(247,215,155,.72) 5px,rgba(247,215,155,.72) 10px); box-shadow: 0 2px 5px rgba(70,53,26,.12); opacity: .88; backdrop-filter: blur(1px); }
+      .selection-tools { position: fixed; bottom: 61px; left: 50%; z-index: 45; display: none; align-items: center; gap: 5px; padding: 6px 9px; transform: translateX(-50%); border: 1px solid rgba(105,94,70,.2); border-radius: 22px; background: rgba(255,252,244,.96); box-shadow: 0 3px 12px rgba(64,51,30,.14); }
+      .selection-tools.visible { display: flex; }
+      .selection-tools span { padding: 0 5px; color: #716b5b; font-size: 10px; }
+      .selection-tools button { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid rgba(105,94,70,.16); border-radius: 50%; background: #fffaf0; color: #555145; cursor: pointer; }
+      .selection-tools button:hover { background: #fff; }
+      .selection-tools .remove-item { color: #a64e43; }
+      .save-button { position: fixed; right: 20px; bottom: 20px; z-index: 45; padding: 9px 16px; border: 1px solid rgba(79,102,79,.3); border-radius: 20px; background: var(--theme-color); color: #fffdf6; box-shadow: 0 3px 12px rgba(64,51,30,.16); font-size: 11px; cursor: pointer; }
+      .save-button:hover { filter: brightness(1.08); }
+      .save-status { position: fixed; right: 112px; bottom: 29px; z-index: 45; color: #5b584b; font-size: 10px; }
+      .theme-control { position: fixed; bottom: 20px; left: 20px; z-index: 45; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(105,94,70,.23); border-radius: 20px; background: rgba(255,252,244,.92); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 10px; cursor: pointer; }
+      .theme-control input { width: 19px; height: 19px; padding: 0; overflow: hidden; border: 1px solid rgba(105,94,70,.25); border-radius: 50%; background: transparent; cursor: pointer; }
+      .page-nav { position: fixed; top: 50%; z-index: 40; display: grid; width: 42px; height: 42px; transform: translateY(-50%); place-items: center; border: 1px solid rgba(105,94,70,.23); border-radius: 50%; background: rgba(255,252,244,.9); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 20px; text-decoration: none; }
+      .page-nav.previous { left: max(8px,calc((100% - 1120px)/2 - 54px)); }
+      .modal-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 18px; background: rgba(53,47,37,.34); backdrop-filter: blur(3px); }
+      .modal-backdrop[hidden] { display: none; }
+      .note-editor { width: min(410px,100%); padding: 23px; border: 1px solid rgba(112,95,64,.2); background: #fbf5e8; box-shadow: 0 16px 50px rgba(39,32,23,.25); }
+      .note-editor h2 { margin: 0 0 14px; color: #47473c; font: 600 30px var(--script); }
+      .note-editor label { display: block; margin: 12px 0 5px; color: #716b5b; font-size: 10px; text-transform: uppercase; }
+      .note-editor input,.note-editor textarea,.note-editor select { width: 100%; padding: 10px; border: 1px solid rgba(105,94,70,.2); background: white; color: #38372f; font: 18px var(--script); }
+      .note-editor textarea { min-height: 110px; resize: vertical; }
+      .note-editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+      .note-editor-actions button { padding: 8px 13px; border: 1px solid rgba(105,94,70,.2); background: #fffaf0; color: #5b584b; cursor: pointer; }
+      .note-editor-actions button[type="submit"] { background: var(--theme-color); color: #fffdf6; }
+      .page-number { position: absolute; right: 30px; bottom: 21px; z-index: 1; color: #8c8574; font: 17px var(--script); }
+      @media(max-width:760px) {
+        .desk { min-height: 100svh; padding: 12px; }
+        .scrapbook { height: calc(100svh - 24px); min-height: 570px; }
+        .toolbar { top: 18px; right: 22px; left: 22px; align-items: flex-start; }
+        .brand { padding-top: 5px; }
+        .tools { max-width: 72%; }
+        .tool-button { padding: 7px 8px; font-size: 10px; }
+        .canvas-area { inset: 158px 22px 34px; }
+        .page-nav { width: 35px; height: 35px; }
+        .page-nav.previous { left: 3px; }
+      }
+      @media(max-width:480px) {
+        .toolbar { right: 16px; left: 16px; display: block; }
+        .brand { margin-bottom: 9px; }
+        .tools { max-width: none; justify-content: center; gap: 5px; }
+        .tool-button { gap: 4px; padding: 7px; }
+        .page-title { top: 132px; }
+        .canvas-area { inset: 202px 16px 32px; }
+        .note { width: 156px; padding: 11px 12px; }
+        .note-text { font-size: 19px; }
+        .photo { width: var(--media-width,150px); }
+        .sticker { width: 58px; height: 58px; font-size: 43px; }
+        .custom-sticker { width: 58px; height: 58px; }
+        .selection-tools { max-width: calc(100vw - 20px); gap: 3px; padding: 5px; }
+        .selection-tools span { font-size: 9px; }
+        .selection-tools button { width: 26px; height: 26px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="desk">
+      <label class="theme-control">Page color <input type="color" value="#58715b" aria-label="Change website color" /></label>
+      <a class="page-nav previous" href="fifth.html" aria-label="Previous page" title="Back to the questions">‹</a>
+      <section class="scrapbook" aria-label="Your blank scrapbook page">
+        <div class="page-edge"></div>
+        <header class="toolbar">
+          <div class="brand"><span class="brand-mark" aria-hidden="true">✿</span><span>our little scrapbook</span></div>
+          <nav class="tools" aria-label="Add scrapbook pieces">
+            <button class="tool-button" id="add-photo" type="button" aria-label="Add local photos"><span class="tool-icon" aria-hidden="true">▧</span>Photo</button>
+            <button class="tool-button" id="add-video" type="button" aria-label="Add local videos"><span class="tool-icon" aria-hidden="true">▶</span>Video</button>
+            <button class="tool-button" id="add-note" type="button" aria-label="Write a note"><span class="tool-icon" aria-hidden="true">✎</span>Note</button>
+            <button class="tool-button" id="add-sticker" type="button" aria-label="Add a sticker"><span class="tool-icon" aria-hidden="true">✿</span>Sticker</button>
+            <button class="tool-button" id="add-sticker-image" type="button" aria-label="Add a local sticker image"><span class="tool-icon" aria-hidden="true">⬆</span>Sticker image</button>
+            <button class="tool-button" id="add-tape" type="button" aria-label="Add tape"><span class="tool-icon" aria-hidden="true">▰</span>Tape</button>
+            <input class="file-input" id="photo-input" type="file" accept="image/*" multiple aria-label="Choose local photos" />
+            <input class="file-input" id="video-input" type="file" accept="video/*" multiple aria-label="Choose local videos" />
+            <input class="file-input" id="sticker-input" type="file" accept="image/*" multiple aria-label="Choose local sticker images" />
+          </nav>
+        </header>
+        <div class="page-title">A little space for anything<strong>Your page, your story</strong><em>make something only you can imagine ✿</em></div>
+        <div class="canvas-area" id="canvas" aria-label="Scrapbook canvas">
+          <div class="empty-hint" id="empty-hint">Choose a tool above to begin adding your own little pieces.</div>
+        </div>
+        <div class="page-number">p. 06</div>
+      </section>
+    </main>
+    <span class="save-status" id="save-status" role="status"></span>
+    <div class="selection-tools" id="selection-tools" aria-label="Selected item controls">
+      <span id="selected-label">Selected item</span>
+      <button id="edit-selected" type="button" aria-label="Edit selected note" title="Edit note" hidden>✎</button>
+      <button id="rotate-left" type="button" aria-label="Rotate selected item left" title="Rotate left">↶</button>
+      <button id="rotate-right" type="button" aria-label="Rotate selected item right" title="Rotate right">↷</button>
+      <button id="resize-smaller" type="button" aria-label="Make selected media smaller" title="Make smaller" hidden>−</button>
+      <button id="resize-larger" type="button" aria-label="Make selected media larger" title="Make larger" hidden>+</button>
+      <button class="remove-item" id="remove-selected" type="button" aria-label="Remove selected item" title="Remove">×</button>
+    </div>
+    <button class="save-button" id="save-page" type="button">Save page</button>
+    <div class="modal-backdrop" id="note-backdrop" hidden>
+      <form class="note-editor" id="note-form">
+        <h2 id="note-editor-title">A little note</h2>
+        <label for="note-date">Date or heading</label>
+        <input id="note-date" maxlength="60" placeholder="A tiny reminder" />
+        <label for="note-text">Your note</label>
+        <textarea id="note-text" maxlength="500" placeholder="Write something worth remembering..." required></textarea>
+        <label for="note-sign">Sign off</label>
+        <input id="note-sign" maxlength="60" placeholder="— with love" />
+        <label for="note-style">Paper style</label>
+        <select id="note-style">
+          <option value="">Sunshine yellow</option>
+          <option value="lavender">Lavender</option>
+          <option value="rose">Soft rose</option>
+          <option value="mint">Garden mint</option>
+          <option value="sky">Cloud blue</option>
+        </select>
+        <div class="note-editor-actions">
+          <button type="button" id="cancel-note">Cancel</button>
+          <button type="submit" id="submit-note">Add note</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      const STORAGE_KEY = "scrapbook-page6";
+      const DB_NAME = "our-little-scrapbook";
+      const STORE_NAME = "assets";
+      const canvas = document.querySelector("#canvas");
+      const emptyHint = document.querySelector("#empty-hint");
+      const selectionTools = document.querySelector("#selection-tools");
+      const saveStatus = document.querySelector("#save-status");
+      const themePicker = document.querySelector(".theme-control input");
+      const noteBackdrop = document.querySelector("#note-backdrop");
+      const noteForm = document.querySelector("#note-form");
+      const noteDate = document.querySelector("#note-date");
+      const noteText = document.querySelector("#note-text");
+      const noteSign = document.querySelector("#note-sign");
+      const noteStyle = document.querySelector("#note-style");
+      const stickerChoices = ["🌷", "⭐", "💛", "🍓", "🦋", "🌙", "🌈", "🍒", "🐝", "🌻", "🪻", "✨", "☁️", "🍀", "🧸", "🎀"];
+      let items = [];
+      let selectedId = null;
+      let editingId = null;
+      let nextId = 0;
+      let drag = null;
+      let saveTimer = 0;
+      let savedAssetKeys = [];
+
+      function setStatus(message) {
+        saveStatus.textContent = message;
+        window.clearTimeout(saveTimer);
+        if (message) saveTimer = window.setTimeout(() => { saveStatus.textContent = ""; }, 2400);
+      }
+
+      function openAssetStore() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            if (!request.result.objectStoreNames.contains(STORE_NAME)) request.result.createObjectStore(STORE_NAME);
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function assetRequest(key, file, remove = false) {
+        const db = await openAssetStore();
+        try {
+          return await new Promise((resolve, reject) => {
+            const transaction = db.transaction(STORE_NAME, remove || file ? "readwrite" : "readonly");
+            const store = transaction.objectStore(STORE_NAME);
+            if (remove) store.delete(key);
+            else if (file) store.put(file, key);
+            else {
+              const request = store.get(key);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+              return;
+            }
+            transaction.oncomplete = resolve;
+            transaction.onerror = () => reject(transaction.error);
+            transaction.onabort = () => reject(transaction.error);
+          });
+        } finally {
+          db.close();
+        }
+      }
+
+      async function saveAsset(key, file) { await assetRequest(key, file); }
+      async function loadAsset(key) { return assetRequest(key); }
+      async function deleteAssets(keys) {
+        for (const key of keys) await assetRequest(key, null, true);
+      }
+
+      function updateSelectionTools() {
+        const item = items.find((entry) => entry.id === selectedId);
+        selectionTools.classList.toggle("visible", Boolean(item));
+        canvas.querySelectorAll(".item").forEach((element) => {
+          element.classList.toggle("selected", element.dataset.id === selectedId);
+        });
+        if (!item) return;
+        document.querySelector("#selected-label").textContent = `Selected ${item.type === "sticker" && item.assetKey ? "sticker image" : item.type}`;
+        document.querySelector("#edit-selected").hidden = item.type !== "note";
+        const isMedia = item.type === "photo" || item.type === "video";
+        document.querySelector("#resize-smaller").hidden = !isMedia;
+        document.querySelector("#resize-larger").hidden = !isMedia;
+      }
+
+      function selectItem(id) {
+        selectedId = id;
+        updateSelectionTools();
+      }
+
+      function layoutItem(item, element) {
+        element.style.left = `${item.x}%`;
+        element.style.top = `${item.y}%`;
+        element.style.setProperty("--angle", `${item.angle || 0}deg`);
+        element.style.setProperty("--media-width", `${item.width || (window.innerWidth <= 680 ? 150 : 186)}px`);
+      }
+
+      function createItemElement(item) {
+        const kind = item.type === "photo" || item.type === "video"
+          ? `photo${item.type === "video" ? " video-photo" : ""}`
+          : item.type === "note" ? `note${item.noteStyle ? ` note-${item.noteStyle}` : ""}` : item.type;
+        const element = document.createElement("div");
+        element.className = `item ${kind}`;
+        element.dataset.id = item.id;
+        layoutItem(item, element);
+
+        if (item.type === "photo" || item.type === "video") {
+          const media = document.createElement(item.type === "photo" ? "img" : "video");
+          media.src = item.type === "photo" ? item.imageUrl : item.mediaUrl;
+          if (item.type === "photo") {
+            media.alt = item.caption || "Scrapbook photo";
+            media.draggable = false;
+          } else {
+            media.controls = true;
+            media.playsInline = true;
+            media.preload = "metadata";
+            media.setAttribute("aria-label", item.caption || "Scrapbook video");
+            media.addEventListener("click", () => selectItem(item.id));
+          }
+          const caption = document.createElement("div");
+          caption.className = "photo-caption";
+          caption.textContent = item.caption || "";
+          element.append(media, caption);
+        } else if (item.type === "note") {
+          const date = document.createElement("div");
+          date.className = "note-date";
+          date.textContent = item.date || "";
+          const text = document.createElement("div");
+          text.className = "note-text";
+          text.textContent = item.text || "";
+          const sign = document.createElement("div");
+          sign.className = "note-sign";
+          sign.textContent = item.sign || "";
+          element.append(date, text, sign);
+        } else if (item.type === "sticker") {
+          if (item.imageUrl) {
+            const image = document.createElement("img");
+            image.className = "custom-sticker";
+            image.src = item.imageUrl;
+            image.alt = item.caption || "Custom sticker";
+            image.draggable = false;
+            element.append(image);
+          } else {
+            element.textContent = item.emoji || "✿";
+          }
+        }
+
+        element.addEventListener("pointerdown", (event) => {
+          if ((event.button !== undefined && event.button !== 0) || event.target.closest("video,button")) return;
+          event.preventDefault();
+          event.stopPropagation();
+          selectItem(item.id);
+          const bounds = canvas.getBoundingClientRect();
+          drag = { id: item.id, pointerId: event.pointerId, element, startX: event.clientX, startY: event.clientY, x: item.x, y: item.y, width: bounds.width, height: bounds.height };
+          element.setPointerCapture(event.pointerId);
+        });
+        element.addEventListener("pointermove", (event) => {
+          if (!drag || drag.id !== item.id || drag.pointerId !== event.pointerId) return;
+          item.x = Math.min(98, Math.max(2, drag.x + (event.clientX - drag.startX) / drag.width * 100));
+          item.y = Math.min(98, Math.max(2, drag.y + (event.clientY - drag.startY) / drag.height * 100));
+          element.style.left = `${item.x}%`;
+          element.style.top = `${item.y}%`;
+        });
+        const endDrag = () => { if (drag?.id === item.id) drag = null; };
+        element.addEventListener("pointerup", endDrag);
+        element.addEventListener("pointercancel", endDrag);
+        return element;
+      }
+
+      function renderItems() {
+        canvas.querySelectorAll(".item").forEach((element) => element.remove());
+        items.forEach((item) => canvas.append(createItemElement(item)));
+        emptyHint.hidden = items.length > 0;
+        updateSelectionTools();
+      }
+
+      function addItem(type, details = {}) {
+        const index = nextId++;
+        const itemIndex = items.length;
+        const item = {
+          id: `page6-${Date.now()}-${index}`,
+          type,
+          x: 34 + (itemIndex % 4) * 10,
+          y: 30 + (itemIndex % 5) * 9,
+          angle: itemIndex % 2 ? 4 : -4,
+          ...details,
+        };
+        items.push(item);
+        renderItems();
+        selectedId = item.id;
+        updateSelectionTools();
+      }
+
+      function openNoteEditor(item = null) {
+        editingId = item ? item.id : null;
+        document.querySelector("#note-editor-title").textContent = editingId ? "Edit your note" : "A little note";
+        document.querySelector("#submit-note").textContent = editingId ? "Save note" : "Add note";
+        noteDate.value = item?.date || "";
+        noteText.value = item?.text || "";
+        noteSign.value = item?.sign || "";
+        noteStyle.value = item?.noteStyle || "";
+        noteBackdrop.hidden = false;
+        noteText.focus();
+      }
+
+      function saveNote(event) {
+        event.preventDefault();
+        const changes = {
+          date: noteDate.value.trim() || "A little note",
+          text: noteText.value.trim(),
+          sign: noteSign.value.trim() || "— with love",
+          noteStyle: noteStyle.value,
+        };
+        if (editingId) {
+          items = items.map((item) => item.id === editingId ? { ...item, ...changes } : item);
+          selectedId = editingId;
+        } else {
+          addItem("note", changes);
+        }
+        noteBackdrop.hidden = true;
+        noteForm.reset();
+        renderItems();
+      }
+
+      function adjustSelected(update) {
+        const item = items.find((entry) => entry.id === selectedId);
+        if (!item) return;
+        Object.assign(item, update(item));
+        const element = Array.from(canvas.querySelectorAll(".item")).find((entry) => entry.dataset.id === item.id);
+        if (element) layoutItem(item, element);
+      }
+
+      function removeSelected() {
+        const item = items.find((entry) => entry.id === selectedId);
+        if (!item) return;
+        if (item.objectUrl) URL.revokeObjectURL(item.objectUrl);
+        items = items.filter((entry) => entry.id !== selectedId);
+        selectedId = null;
+        renderItems();
+      }
+
+      async function addLocalFiles(event, type) {
+        const files = Array.from(event.target.files || []);
+        for (const file of files) {
+          const expected = type === "video" ? "video/" : "image/";
+          if (!file.type.startsWith(expected)) {
+            setStatus(`${file.name} is not a supported ${type === "video" ? "video" : "image"}`);
+            continue;
+          }
+          const assetKey = `page6-${Date.now()}-${nextId++}-${file.name}`;
+          try {
+            await saveAsset(assetKey, file);
+            const objectUrl = URL.createObjectURL(file);
+            addItem(type === "sticker" ? "sticker" : type, {
+              ...(type === "sticker"
+                ? { imageUrl: objectUrl, caption: file.name }
+                : { imageUrl: objectUrl, mediaUrl: objectUrl, caption: file.name.replace(/\.[^.]+$/, "") }),
+              objectUrl,
+              assetKey,
+              angle: -3,
+            });
+          } catch (error) {
+            console.error(`Could not add ${file.name}.`, error);
+            setStatus(`Could not add ${file.name}`);
+          }
+        }
+        event.target.value = "";
+      }
+
+      async function savePage() {
+        const savedItems = items.map((item) => {
+          const { objectUrl, mediaUrl, ...savedItem } = item;
+          if (savedItem.assetKey) delete savedItem.imageUrl;
+          return savedItem;
+        });
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(savedItems));
+        } catch (error) {
+          console.error("Could not save your scrapbook page.", error);
+          setStatus("Save failed — check browser storage");
+          return;
+        }
+        const activeKeys = savedItems.map((item) => item.assetKey).filter(Boolean);
+        const removedKeys = savedAssetKeys.filter((key) => !activeKeys.includes(key));
+        savedAssetKeys = activeKeys;
+        selectedId = null;
+        updateSelectionTools();
+        setStatus("Saved");
+        try {
+          await deleteAssets(removedKeys);
+        } catch (error) {
+          console.error("Could not remove unused saved media.", error);
+          setStatus("Page saved, but unused media could not be removed");
+        }
+      }
+
+      async function restorePage() {
+        let savedItems;
+        try {
+          savedItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          if (!Array.isArray(savedItems)) throw new Error("Saved page data must be a list.");
+        } catch (error) {
+          console.error("Could not read the saved scrapbook page.", error);
+          setStatus("Could not read saved page");
+          return;
+        }
+        savedAssetKeys = savedItems.map((item) => item.assetKey).filter(Boolean);
+        for (const savedItem of savedItems) {
+          try {
+            const item = { ...savedItem };
+            if (!item.id || !["photo", "video", "note", "sticker", "tape"].includes(item.type)) {
+              throw new Error("Saved page contains an unsupported scrapbook item.");
+            }
+            if (item.assetKey) {
+              const blob = await loadAsset(item.assetKey);
+              if (!blob) throw new Error(`Saved media is missing: ${item.assetKey}`);
+              item.objectUrl = URL.createObjectURL(blob);
+              if (item.type === "video") item.mediaUrl = item.objectUrl;
+              else item.imageUrl = item.objectUrl;
+            }
+            items.push(item);
+          } catch (error) {
+            console.error("Could not restore a saved scrapbook item.", error);
+            setStatus("Some saved items could not be restored");
+          }
+        }
+        renderItems();
+      }
+
+      function setTheme(color) {
+        document.documentElement.style.setProperty("--theme-color", color);
+        localStorage.setItem("scrapbook-theme", color);
+      }
+
+      themePicker.value = localStorage.getItem("scrapbook-theme") || "#58715b";
+      document.documentElement.style.setProperty("--theme-color", themePicker.value);
+      themePicker.addEventListener("input", (event) => setTheme(event.target.value));
+      document.querySelector("#add-photo").addEventListener("click", () => document.querySelector("#photo-input").click());
+      document.querySelector("#add-video").addEventListener("click", () => document.querySelector("#video-input").click());
+      document.querySelector("#add-sticker-image").addEventListener("click", () => document.querySelector("#sticker-input").click());
+      document.querySelector("#photo-input").addEventListener("change", (event) => addLocalFiles(event, "photo"));
+      document.querySelector("#video-input").addEventListener("change", (event) => addLocalFiles(event, "video"));
+      document.querySelector("#sticker-input").addEventListener("change", (event) => addLocalFiles(event, "sticker"));
+      document.querySelector("#add-note").addEventListener("click", () => openNoteEditor());
+      document.querySelector("#add-sticker").addEventListener("click", () => {
+        const count = items.filter((item) => item.type === "sticker" && !item.assetKey).length;
+        addItem("sticker", { emoji: stickerChoices[count % stickerChoices.length] });
+      });
+      document.querySelector("#add-tape").addEventListener("click", () => addItem("tape"));
+      document.querySelector("#edit-selected").addEventListener("click", () => {
+        const item = items.find((entry) => entry.id === selectedId);
+        if (item?.type === "note") openNoteEditor(item);
+      });
+      document.querySelector("#rotate-left").addEventListener("click", () => adjustSelected((item) => ({ angle: (item.angle || 0) - 10 })));
+      document.querySelector("#rotate-right").addEventListener("click", () => adjustSelected((item) => ({ angle: (item.angle || 0) + 10 })));
+      document.querySelector("#resize-smaller").addEventListener("click", () => adjustSelected((item) => ({ width: Math.max(90, (item.width || (window.innerWidth <= 680 ? 150 : 186)) - 20) })));
+      document.querySelector("#resize-larger").addEventListener("click", () => adjustSelected((item) => ({ width: Math.min(360, (item.width || (window.innerWidth <= 680 ? 150 : 186)) + 20) })));
+      document.querySelector("#remove-selected").addEventListener("click", removeSelected);
+      document.querySelector("#save-page").addEventListener("click", savePage);
+      document.querySelector("#cancel-note").addEventListener("click", () => { noteBackdrop.hidden = true; noteForm.reset(); });
+      noteBackdrop.addEventListener("click", (event) => {
+        if (event.target === noteBackdrop) {
+          noteBackdrop.hidden = true;
+          noteForm.reset();
+        }
+      });
+      noteForm.addEventListener("submit", saveNote);
+      canvas.addEventListener("click", (event) => {
+        if (event.target === canvas) {
+          selectedId = null;
+          updateSelectionTools();
+        }
+      });
+      restorePage();
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>

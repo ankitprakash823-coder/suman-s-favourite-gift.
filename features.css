@@ -1,0 +1,200 @@
+.love-day-counter {
+  position: fixed;
+  top: 4px;
+  right: 14px;
+  z-index: 105;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid rgba(166, 132, 65, .34);
+  border-radius: 22px;
+  background: rgba(255, 252, 244, .92);
+  color: #796238;
+  box-shadow: 0 3px 12px rgba(64, 51, 30, .12);
+  font-size: 10px;
+  letter-spacing: .04em;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
+.love-day-counter strong {
+  color: #9a7736;
+  font: 600 18px/1 "Playfair Display", Georgia, serif;
+}
+
+.love-music-player {
+  position: fixed;
+  right: 18px;
+  bottom: 64px;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 7px 12px;
+  overflow: auto;
+  resize: both;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - 20px);
+  border: 1px solid rgba(166, 132, 65, .42);
+  border-radius: 24px;
+  background: rgba(255, 252, 244, .94);
+  color: #796238;
+  box-shadow: 0 4px 14px rgba(64, 51, 30, .16);
+  backdrop-filter: blur(9px);
+}
+
+.love-music-player button {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(166, 132, 65, .42);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f8edcf, #ead7a6);
+  color: #725622;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.love-music-player button:hover { filter: brightness(1.05); }
+.love-music-player button:disabled { cursor: default; opacity: .48; }
+.love-music-player button:focus-visible,
+.love-music-player input:focus-visible,
+.love-letter-close:focus-visible { outline: 2px solid #a17b36; outline-offset: 3px; }
+
+.love-day-counter[hidden],
+.love-music-player[hidden] { display: none; }
+
+.love-music-file-picker { display: none; }
+
+.love-page-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  border: 0;
+  background: #e8dfce;
+}
+
+.love-music-player label {
+  color: #806b43;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.love-music-drag-handle {
+  color: #806b43;
+  cursor: grab;
+  font-size: 14px;
+  line-height: 1;
+  touch-action: none;
+  user-select: none;
+}
+
+.love-music-drag-handle:active { cursor: grabbing; }
+.love-music-drag-handle:focus-visible { outline: 2px solid #a17b36; outline-offset: 3px; }
+
+.love-music-player input[type="range"] {
+  width: 68px;
+  height: 4px;
+  accent-color: #b08a42;
+  cursor: pointer;
+}
+
+.love-music-status {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 7px);
+  width: max-content;
+  max-width: min(250px, calc(100vw - 32px));
+  padding: 6px 9px;
+  border: 1px solid rgba(166, 132, 65, .28);
+  border-radius: 12px;
+  background: rgba(255, 252, 244, .96);
+  color: #6e5a36;
+  font-size: 10px;
+  box-shadow: 0 3px 10px rgba(64, 51, 30, .1);
+}
+
+.love-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.love-letter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(48, 42, 34, .32);
+  backdrop-filter: blur(7px);
+}
+
+.love-letter-backdrop[hidden] { display: none; }
+
+.love-letter {
+  position: relative;
+  width: min(470px, 100%);
+  max-height: min(80vh, 650px);
+  overflow: auto;
+  padding: clamp(26px, 6vw, 42px);
+  border: 1px solid rgba(255, 255, 255, .64);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 252, 244, .82), rgba(247, 239, 220, .66));
+  color: #51493b;
+  box-shadow: 0 24px 80px rgba(38, 31, 22, .28), inset 0 1px rgba(255, 255, 255, .7);
+  text-align: center;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  animation: love-letter-arrive 420ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.love-letter-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid rgba(121, 98, 56, .2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .58);
+  color: #796238;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.love-letter-icon { margin-bottom: 5px; color: #b08a42; font-size: 23px; }
+.love-letter h2 { margin: 0 0 16px; color: #6f5930; font: 500 clamp(29px, 7vw, 38px)/1.1 "Playfair Display", Georgia, serif; }
+.love-letter p { margin: 0 0 13px; font: 21px/1.35 "Caveat", cursive; }
+.love-letter .love-letter-sign { margin-top: 21px; color: #92733b; font: 24px/1.2 "Caveat", cursive; }
+
+@keyframes love-letter-arrive {
+  from { opacity: 0; transform: translateY(12px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+  .love-day-counter { top: 4px; right: 8px; gap: 5px; padding: 7px 9px; font-size: 9px; }
+  .love-day-counter strong { font-size: 16px; }
+  .love-music-player { right: 10px; bottom: 62px; gap: 6px; padding: 6px 9px; }
+  .love-music-player button { width: 25px; height: 25px; }
+  .love-music-player input[type="range"] { width: 55px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .love-letter { animation: none; }
+}

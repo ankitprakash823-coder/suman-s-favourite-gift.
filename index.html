@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>Our little scrapbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "DM Sans", sans-serif;
+        color: #36362f;
+        background: #e8dfce;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        --ink: #38372f;
+        --muted: #898475;
+        --paper: #f7f1e4;
+        --theme-color: #58715b;
+        --green: var(--theme-color);
+        --desk-color: color-mix(in srgb, var(--theme-color) 12%, #e8dfce);
+        --paper-color: color-mix(in srgb, var(--theme-color) 5%, #f7f1e4);
+        --note-color: color-mix(in srgb, var(--theme-color) 14%, #f9e89e);
+        --script: "Caveat", cursive;
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; min-height: 100vh; }
+      button { font: inherit; }
+      #root { min-height: 100vh; }
+
+      .desk {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        overflow: hidden;
+        padding: 34px clamp(14px, 4vw, 56px);
+        background-color: var(--desk-color);
+        background-image:
+          radial-gradient(ellipse at 18% 22%, rgba(255, 255, 255, .47), transparent 38%),
+          radial-gradient(ellipse at 84% 78%, rgba(172, 151, 111, .14), transparent 38%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+        background-size: auto, auto, 190px 190px;
+      }
+
+      .scrapbook {
+        position: relative;
+        width: min(1120px, 100%);
+        height: min(740px, calc(100vh - 68px));
+        min-height: 570px;
+        overflow: hidden;
+        border: 1px solid rgba(112, 95, 64, .19);
+        border-radius: 5px 8px 7px 5px;
+        background-color: var(--paper-color);
+        background-image:
+          linear-gradient(90deg, transparent 49.8%, rgba(126, 111, 81, .10) 50%, rgba(255, 255, 255, .38) 50.2%, transparent 50.55%),
+          radial-gradient(ellipse at 5% 10%, rgba(255, 255, 255, .7), transparent 45%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E");
+        background-size: 100% 100%, auto, 170px 170px;
+        box-shadow: 0 25px 70px rgba(63, 49, 28, .2), 0 3px 8px rgba(66, 52, 33, .1), inset 0 0 0 8px rgba(255, 255, 255, .21);
+      }
+
+      .scrapbook::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 18px;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, rgba(91, 76, 52, .03), rgba(91, 76, 52, .10), rgba(255, 255, 255, .22), rgba(91, 76, 52, .03));
+        content: "";
+        pointer-events: none;
+      }
+
+      .page-edge {
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(130, 113, 81, .13);
+        pointer-events: none;
+      }
+
+      .toolbar {
+        position: absolute;
+        z-index: 20;
+        top: 26px;
+        right: 34px;
+        left: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        pointer-events: none;
+      }
+
+      .toolbar > * { pointer-events: auto; }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #666252;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        place-items: center;
+        border: 1px solid rgba(89, 107, 81, .3);
+        border-radius: 50%;
+        color: var(--green);
+        font-size: 15px;
+      }
+
+      .tools { display: flex; gap: 7px; }
+
+      .tool-button {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 12px;
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 3px;
+        background: rgba(255, 252, 244, .72);
+        color: #5b584b;
+        font-size: 11px;
+        cursor: pointer;
+        box-shadow: 0 2px 3px rgba(64, 51, 30, .04);
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .tool-button:hover { transform: translateY(-2px); background: #fffaf0; }
+      .tool-button .plus { color: var(--green); font-size: 16px; line-height: 10px; }
+      .tool-button .tool-icon { color: var(--green); font-size: 14px; line-height: 1; }
+      .file-input { display: none; }
+
+      .page-title {
+        position: absolute;
+        top: 17%;
+        left: 50%;
+        z-index: 1;
+        width: 80%;
+        transform: translateX(-50%);
+        color: #817966;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: .25em;
+        text-align: center;
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+
+      .page-title strong {
+        display: block;
+        margin-top: 9px;
+        color: #47473c;
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(24px, 3.4vw, 39px);
+        font-weight: 500;
+        letter-spacing: -.04em;
+        text-transform: none;
+      }
+
+      .page-title em {
+        display: block;
+        margin-top: 6px;
+        color: #898171;
+        font-family: var(--script);
+        font-size: 22px;
+        font-style: normal;
+        font-weight: 500;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .page-number {
+        position: absolute;
+        right: 28px;
+        bottom: 20px;
+        z-index: 1;
+        color: #9c947f;
+        font-family: var(--script);
+        font-size: 16px;
+        pointer-events: none;
+      }
+
+      .item {
+        position: absolute;
+        z-index: 2;
+        touch-action: none;
+        user-select: none;
+        cursor: grab;
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) rotate(var(--angle, 0deg));
+        transition: filter 150ms ease;
+      }
+
+      .item:active { cursor: grabbing; }
+      .item.dragging { z-index: 30 !important; filter: drop-shadow(0 10px 12px rgba(50, 42, 30, .2)); }
+
+      .note {
+        width: 180px;
+        min-height: 100px;
+        padding: 14px 16px 13px;
+        background: var(--note-color);
+        color: #4a473b;
+        box-shadow: 1px 5px 9px rgba(69, 54, 25, .16);
+      }
+
+      .note::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-bottom: 14px solid rgba(181, 154, 83, .22);
+        border-left: 14px solid transparent;
+        content: "";
+      }
+
+      .note-font { font-family: var(--script); }
+      .note-date {
+        margin-bottom: 4px;
+        color: rgba(74, 71, 59, .66);
+        font-family: var(--script);
+        font-size: 14px;
+      }
+      .note-text { font-size: 21px; line-height: 1.05; }
+      .note-sign {
+        margin-top: 5px;
+        color: #718067;
+        font-size: 18px;
+        text-align: right;
+      }
+
+      .photo {
+        width: 186px;
+        padding: 9px 9px 36px;
+        background: #fffdf6;
+        box-shadow: 0 5px 15px rgba(52, 44, 30, .2);
+      }
+
+      .photo img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1.12;
+        object-fit: cover;
+        background: #d7d0bc;
+        pointer-events: none;
+      }
+
+      .photo video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1.12;
+        background: #292820;
+        object-fit: cover;
+      }
+
+      .photo video { pointer-events: auto; }
+      .photo.video-photo { padding-bottom: 36px; }
+
+      .custom-sticker {
+        display: block;
+        width: 76px;
+        height: 76px;
+        object-fit: contain;
+        pointer-events: none;
+      }
+
+      .media-actions {
+        position: absolute;
+        top: -12px;
+        right: -10px;
+        z-index: 3;
+        display: flex;
+        gap: 3px;
+      }
+
+      .media-actions button, .letter-actions button {
+        display: grid;
+        width: 25px;
+        height: 25px;
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 50%;
+        background: rgba(255, 252, 244, .96);
+        color: #555145;
+        box-shadow: 0 2px 5px rgba(64, 51, 30, .14);
+        font-size: 15px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .media-actions button:hover, .letter-actions button:hover { background: #fff; }
+      .media-actions .remove-item { color: #a64e43; }
+
+      .item-actions {
+        position: absolute;
+        top: -13px;
+        left: -9px;
+        z-index: 4;
+        display: flex;
+        gap: 3px;
+      }
+
+      .item-actions button {
+        display: grid;
+        width: 23px;
+        height: 23px;
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 50%;
+        background: rgba(255, 252, 244, .96);
+        color: #555145;
+        box-shadow: 0 2px 5px rgba(64, 51, 30, .14);
+        font-size: 13px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .item-actions button:hover { background: white; }
+      .item-actions .remove-item { color: #a64e43; }
+
+      .note.note-lavender { background: #e6dcf3; }
+      .note.note-rose { background: #f5dcd9; }
+      .note.note-mint { background: #deebdc; }
+      .note.note-sky { background: #dce8f1; }
+
+      .save-button {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 45;
+        padding: 9px 16px;
+        border: 1px solid rgba(79, 102, 79, .3);
+        border-radius: 20px;
+        background: var(--theme-color);
+        color: #fffdf6;
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .16);
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      .save-button:hover { filter: brightness(1.08); }
+      .save-status { position: fixed; right: 100px; bottom: 29px; z-index: 45; color: #5b584b; font-size: 10px; }
+
+      .selection-tools {
+        position: fixed;
+        bottom: 61px;
+        left: 50%;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 9px;
+        transform: translateX(-50%);
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 22px;
+        background: rgba(255, 252, 244, .96);
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .14);
+      }
+
+      .selection-tools span { padding: 0 5px; color: #716b5b; font-size: 10px; }
+      .selection-tools button {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .16);
+        border-radius: 50%;
+        background: #fffaf0;
+        color: #555145;
+        cursor: pointer;
+      }
+
+      .selection-tools button:hover { background: white; }
+      .selection-tools .remove-item { color: #a64e43; }
+
+      .theme-control {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 11px;
+        border: 1px solid rgba(105, 94, 70, .23);
+        border-radius: 20px;
+        background: rgba(255, 252, 244, .92);
+        color: #5b584b;
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .12);
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .theme-control input {
+        width: 19px;
+        height: 19px;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid rgba(105, 94, 70, .25);
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .media.photo { width: var(--media-width, 186px); }
+      .media.photo img, .media.photo video { width: 100%; }
+
+      .photo-caption {
+        position: absolute;
+        right: 5px;
+        bottom: 1px;
+        left: 5px;
+        overflow: hidden;
+        color: #575348;
+        font-size: 19px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .photo-caption small {
+        display: block;
+        margin-top: -1px;
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .sticker {
+        display: grid;
+        width: 75px;
+        height: 75px;
+        place-items: center;
+        filter: drop-shadow(1px 3px 2px rgba(50, 42, 30, .14));
+        font-size: 55px;
+        line-height: 1;
+      }
+
+      .tape {
+        width: 104px;
+        height: 28px;
+        border: 1px solid rgba(163, 128, 77, .12);
+        background: repeating-linear-gradient(45deg, rgba(250, 222, 169, .72), rgba(250, 222, 169, .72) 5px, rgba(247, 215, 155, .72) 5px, rgba(247, 215, 155, .72) 10px);
+        box-shadow: 0 2px 5px rgba(70, 53, 26, .12);
+        opacity: .88;
+        backdrop-filter: blur(1px);
+      }
+
+      .drag-hint {
+        position: absolute;
+        right: 0;
+        bottom: 20px;
+        left: 0;
+        z-index: 1;
+        color: #8c8574;
+        font-family: var(--script);
+        font-size: 17px;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      .page-nav {
+        position: absolute;
+        top: 50%;
+        z-index: 40;
+        display: grid;
+        width: 42px;
+        height: 42px;
+        transform: translateY(-50%);
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .23);
+        border-radius: 50%;
+        background: rgba(255, 252, 244, .88);
+        color: #5b584b;
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .12);
+        font-size: 20px;
+        text-decoration: none;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .page-nav:hover { transform: translateY(-50%) scale(1.07); background: #fffaf0; }
+      .page-nav:disabled { opacity: .52; cursor: default; }
+      .page-nav:disabled:hover { transform: translateY(-50%); }
+      .page-nav.previous { left: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+      .page-nav.next { right: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+
+      .note-editor-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: rgba(53, 47, 37, .34);
+        backdrop-filter: blur(3px);
+      }
+
+      .note-editor {
+        width: min(390px, 100%);
+        padding: 23px;
+        border: 1px solid rgba(112, 95, 64, .2);
+        background: #fbf5e8;
+        box-shadow: 0 16px 50px rgba(39, 32, 23, .25);
+      }
+
+      .note-editor h2 {
+        margin: 0 0 16px;
+        color: #47473c;
+        font-family: var(--script);
+        font-size: 31px;
+        font-weight: 600;
+      }
+
+      .note-editor label {
+        display: block;
+        margin: 12px 0 5px;
+        color: #716b5b;
+        font-size: 10px;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+      }
+
+      .note-editor input, .note-editor textarea {
+        width: 100%;
+        padding: 9px 10px;
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 2px;
+        outline-color: #839078;
+        background: rgba(255, 255, 255, .62);
+        color: var(--ink);
+        font: 17px var(--script);
+      }
+
+      .note-editor textarea { min-height: 92px; resize: vertical; }
+      .note-editor select { width: 100%; padding: 9px 10px; border: 1px solid rgba(105, 94, 70, .2); background: rgba(255, 255, 255, .62); color: var(--ink); }
+      .note-editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+      .note-editor-actions button { padding: 8px 13px; border: 1px solid rgba(105, 94, 70, .2); background: #fffaf0; color: #5b584b; cursor: pointer; }
+      .note-editor-actions button[type="submit"] { background: #58715b; color: #fffdf6; }
+
+      @media (max-width: 680px) {
+        .desk { min-height: 100svh; padding: 10px; }
+        .scrapbook { height: calc(100svh - 20px); min-height: 560px; }
+        .toolbar { top: 20px; right: 18px; left: 18px; align-items: flex-start; }
+        .brand { gap: 6px; font-size: 8px; }
+        .brand-mark { width: 25px; height: 25px; }
+        .tools { max-width: 69%; justify-content: flex-end; flex-wrap: wrap; }
+        .tool-button { padding: 7px 8px; font-size: 10px; }
+        .tool-button .tool-icon { font-size: 13px; }
+        .page-title { top: 16%; }
+        .note { width: 145px; min-height: 88px; padding: 11px 12px; }
+        .note-text { font-size: 19px; }
+        .media.photo { width: var(--media-width, 150px); padding: 7px 7px 32px; }
+        .sticker { width: 58px; height: 58px; font-size: 43px; }
+        .custom-sticker { width: 58px; height: 58px; }
+        .tape { width: 82px; height: 23px; }
+        .page-nav { width: 35px; height: 35px; font-size: 17px; }
+        .page-nav.previous { left: 3px; }
+        .page-nav.next { right: 3px; }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime?external=react",
+          "react/jsx-dev-runtime": "https://esm.sh/react@18.3.1/jsx-dev-runtime?external=react",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React, { useRef, useState } from "react";
+      import { createRoot } from "react-dom/client";
+
+      // Customize the names, keepsakes, and opening layout here.
+      const Configuration = {
+        names: ["ANKIT", "SUMAN"],
+        subtitle: "little things, kept close",
+        items: [
+          { id: "photo-lake", type: "photo", x: 27, y: 48, angle: -7, imageUrl: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=85", date: "June 3, 2023", caption: "that quiet little getaway" },
+          { id: "note-first", type: "note", x: 70, y: 46, angle: 5, date: "October 14, 2022", text: "The night we met. I knew there was something ✨", sign: "— ANKIT" },
+          { id: "tape-photo", type: "tape", x: 27, y: 37, angle: -7 },
+          { id: "sticker-flower", type: "sticker", x: 43, y: 63, angle: 10, emoji: "🌼" },
+          { id: "photo-coffee", type: "photo", x: 57, y: 70, angle: 6, imageUrl: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=700&q=85", date: "February 11, 2024", caption: "our slow Sunday" },
+          { id: "tape-note", type: "tape", x: 70, y: 38, angle: 5 },
+          { id: "sticker-heart", type: "sticker", x: 80, y: 67, angle: -8, emoji: "💌" },
+          { id: "note-little", type: "note", x: 39, y: 79, angle: -4, date: "A tiny reminder", text: "My favorite place is right next to you.", sign: "love, always" },
+        ],
+      };
+
+      const STORAGE_KEY = "scrapbook-page1";
+
+      function openAssetStore() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open("our-little-scrapbook", 1);
+          request.onupgradeneeded = () => request.result.createObjectStore("assets");
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function saveAsset(key, file) {
+        const db = await openAssetStore();
+        await new Promise((resolve, reject) => {
+          const transaction = db.transaction("assets", "readwrite");
+          transaction.objectStore("assets").put(file, key);
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        });
+        db.close();
+      }
+
+      async function loadAsset(key) {
+        const db = await openAssetStore();
+        const blob = await new Promise((resolve, reject) => {
+          const request = db.transaction("assets").objectStore("assets").get(key);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        db.close();
+        return blob;
+      }
+
+      function Draggable({ item, children, zIndex, onRaise, className = "", onMove }) {
+        const [offset, setOffset] = useState({ x: item.dx || 0, y: item.dy || 0 });
+        const [dragging, setDragging] = useState(false);
+        const start = useRef(null);
+
+        React.useEffect(() => {
+          setOffset({ x: item.dx || 0, y: item.dy || 0 });
+        }, [item.dx, item.dy]);
+
+        function onPointerDown(event) {
+          if (event.button !== undefined && event.button !== 0) return;
+          if (event.target.closest("video, button")) return;
+          event.preventDefault();
+          event.stopPropagation();
+          start.current = { pointerX: event.clientX, pointerY: event.clientY, x: offset.x, y: offset.y };
+          event.currentTarget.setPointerCapture(event.pointerId);
+          setDragging(true);
+          onRaise(item.id);
+        }
+
+        function onPointerMove(event) {
+          if (!start.current) return;
+          const nextOffset = {
+            x: start.current.x + event.clientX - start.current.pointerX,
+            y: start.current.y + event.clientY - start.current.pointerY,
+          };
+          setOffset(nextOffset);
+          onMove(item.id, nextOffset);
+        }
+
+        function onPointerUp() {
+          start.current = null;
+          setDragging(false);
+        }
+
+        return React.createElement(
+          "div",
+          {
+            className: `item ${className}${dragging ? " dragging" : ""}`,
+            style: {
+              left: `${item.x}%`,
+              top: `${item.y}%`,
+              "--angle": `${item.angle || 0}deg`,
+              "--dx": `${offset.x}px`,
+              "--dy": `${offset.y}px`,
+              "--media-width": `${item.width || (window.innerWidth <= 680 ? 150 : 186)}px`,
+              zIndex,
+            },
+            onPointerDown,
+            onPointerMove,
+            onPointerUp,
+            onPointerCancel: onPointerUp,
+          },
+          children,
+        );
+      }
+
+      function ScrapItem({ item, selected, zIndex, onRaise, onRemove, onResize, onRotate, onEdit, onMove }) {
+        let content;
+        let className = "";
+
+        if (item.type === "photo" || item.type === "video") {
+          className = `photo media${item.type === "video" ? " video-photo" : ""}`;
+          content = React.createElement(
+            React.Fragment,
+            null,
+            item.type === "video"
+              ? React.createElement("video", {
+                  src: item.mediaUrl,
+                  controls: true,
+                  playsInline: true,
+                  preload: "metadata",
+                  "aria-label": item.caption || "Scrapbook video",
+                  onClick: (event) => { event.stopPropagation(); onRaise(item.id); },
+                })
+              : React.createElement("img", { src: item.imageUrl, alt: item.caption || "A scrapbook memory", draggable: false }),
+            React.createElement("div", { className: "photo-caption note-font" },
+              item.caption,
+              item.date && React.createElement("small", null, item.date),
+            ),
+          );
+        } else if (item.type === "note") {
+          className = `note${item.noteStyle ? ` note-${item.noteStyle}` : ""}`;
+          content = React.createElement(
+            React.Fragment,
+            null,
+            React.createElement("div", { className: "note-date note-font" }, item.date),
+            React.createElement("div", { className: "note-text note-font" }, item.text),
+            React.createElement("div", { className: "note-sign note-font" }, item.sign),
+          );
+        } else if (item.type === "sticker") {
+          className = "sticker";
+          content = item.imageUrl
+            ? React.createElement("img", { className: "custom-sticker", src: item.imageUrl, alt: item.caption || "Custom sticker", draggable: false })
+            : item.emoji || "✿";
+        } else {
+          className = "tape";
+        }
+
+        const controls = !selected || item.type === "photo" || item.type === "video"
+          ? null
+          : React.createElement("div", { className: "item-actions", "aria-label": "Item controls" },
+              item.type === "note" && React.createElement("button", {
+                type: "button", "aria-label": "Edit note", title: "Edit note",
+                onClick: (event) => { event.stopPropagation(); onEdit(item); },
+              }, "✎"),
+              React.createElement("button", {
+                type: "button", "aria-label": "Rotate item left", title: "Rotate left",
+                onClick: (event) => { event.stopPropagation(); onRotate(item.id, -10); },
+              }, "↶"),
+              React.createElement("button", {
+                type: "button", "aria-label": "Rotate item right", title: "Rotate right",
+                onClick: (event) => { event.stopPropagation(); onRotate(item.id, 10); },
+              }, "↷"),
+              React.createElement("button", {
+                className: "remove-item", type: "button", "aria-label": "Remove item", title: "Remove",
+                onClick: (event) => { event.stopPropagation(); onRemove(item.id); },
+              }, "×"),
+            );
+
+        return React.createElement(Draggable, { item, zIndex, onRaise, onMove, className },
+          content,
+          selected && (item.type === "photo" || item.type === "video")
+            ? React.createElement("div", { className: "media-actions", "aria-label": "Media controls" },
+                React.createElement("button", { type: "button", "aria-label": "Rotate media left", onClick: (event) => { event.stopPropagation(); onRotate(item.id, -10); } }, "↶"),
+                React.createElement("button", { type: "button", "aria-label": "Rotate media right", onClick: (event) => { event.stopPropagation(); onRotate(item.id, 10); } }, "↷"),
+                React.createElement("button", { type: "button", "aria-label": "Make media smaller", onClick: (event) => { event.stopPropagation(); onResize(item.id, -20); } }, "−"),
+                React.createElement("button", { type: "button", "aria-label": "Make media larger", onClick: (event) => { event.stopPropagation(); onResize(item.id, 20); } }, "+"),
+                React.createElement("button", { className: "remove-item", type: "button", "aria-label": "Remove media", onClick: (event) => { event.stopPropagation(); onRemove(item.id); } }, "×"),
+              )
+            : controls,
+        );
+      }
+
+      function App() {
+        const [items, setItems] = useState(() => {
+          try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || Configuration.items;
+          } catch (error) {
+            console.error("Could not read the saved scrapbook.", error);
+            return Configuration.items;
+          }
+        });
+        const [raisedId, setRaisedId] = useState(null);
+        const [noteEditorOpen, setNoteEditorOpen] = useState(false);
+        const [editingNoteId, setEditingNoteId] = useState(null);
+        const [noteDraft, setNoteDraft] = useState({ date: "", text: "", sign: "", noteStyle: "" });
+        const [saveStatus, setSaveStatus] = useState("");
+        const nextId = useRef(Date.now());
+        const photoInput = useRef(null);
+        const videoInput = useRef(null);
+        const stickerInput = useRef(null);
+        const [themeColor, setThemeColor] = useState(() => localStorage.getItem("scrapbook-theme") || "#58715b");
+
+        React.useEffect(() => {
+          document.documentElement.style.setProperty("--theme-color", themeColor);
+        }, [themeColor]);
+
+        React.useEffect(() => {
+          let cancelled = false;
+          async function restoreLocalMedia() {
+            const restored = await Promise.all(items.map(async (item) => {
+              if (!item.assetKey) return item;
+              const blob = await loadAsset(item.assetKey);
+              if (!blob) return item;
+              const url = URL.createObjectURL(blob);
+              return {
+                ...item,
+                objectUrl: url,
+                ...(item.type === "video" ? { mediaUrl: url } : { imageUrl: url }),
+              };
+            }));
+            if (!cancelled) {
+              const restoredById = new Map(restored.filter((item) => item.assetKey).map((item) => [item.id, item]));
+              setItems((current) => current.map((item) => {
+                const restoredItem = restoredById.get(item.id);
+                return restoredItem ? { ...item, objectUrl: restoredItem.objectUrl, imageUrl: restoredItem.imageUrl, mediaUrl: restoredItem.mediaUrl } : item;
+              }));
+            }
+          }
+          restoreLocalMedia().catch((error) => {
+            console.error("Could not restore saved local media.", error);
+            setSaveStatus("Could not restore saved media");
+          });
+          return () => { cancelled = true; };
+        }, []);
+
+        function changeTheme(event) {
+          const color = event.target.value;
+          setThemeColor(color);
+          localStorage.setItem("scrapbook-theme", color);
+        }
+
+        function removeItem(id) {
+          const item = items.find((entry) => entry.id === id);
+          if (item && item.objectUrl) URL.revokeObjectURL(item.objectUrl);
+          setItems((current) => current.filter((item) => item.id !== id));
+          if (raisedId === id) setRaisedId(null);
+        }
+
+        function resizeMedia(id, amount) {
+          setItems((current) => current.map((item) => {
+            if (item.id !== id) return item;
+            const baseWidth = window.innerWidth <= 680 ? 150 : 186;
+            const width = item.width || baseWidth;
+            return { ...item, width: Math.min(360, Math.max(90, width + amount)) };
+          }));
+        }
+
+        function addItem(type, details = {}) {
+          const index = nextId.current++;
+          const samples = {
+            note: { type, date: "A little note", text: "Write down a little something worth remembering.", sign: "— me", noteStyle: "", x: 47, y: 54, angle: (index % 2 ? 1 : -1) * 3 },
+            photo: { type, imageUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=85", caption: "a day to remember", x: 52, y: 56, angle: (index % 2 ? 1 : -1) * 4 },
+            video: { type, caption: "a little video to remember", x: 52, y: 56, angle: (index % 2 ? 1 : -1) * 4 },
+            sticker: { type, emoji: ["🌷", "⭐", "💛", "🍓", "🦋", "🌙", "🌈", "🍒", "🐝", "🌻", "🪻", "✨", "☁️", "🍀", "🧸", "🎀"][index % 16], x: 48, y: 52, angle: index % 2 ? 8 : -8 },
+            tape: { type, x: 50, y: 55, angle: (index % 2 ? 1 : -1) * 8 },
+          };
+          const item = { ...samples[type], ...details, id: `added-${type}-${index}` };
+          setItems((current) => [...current, item]);
+          setRaisedId(item.id);
+        }
+
+        async function addLocalFiles(event, type) {
+          const files = Array.from(event.target.files || []);
+          for (const [index, file] of files.entries()) {
+            const id = `local-${Date.now()}-${nextId.current++}`;
+            const assetKey = `${id}-${file.name}`;
+            try {
+              await saveAsset(assetKey, file);
+              const url = URL.createObjectURL(file);
+              const isSticker = type === "sticker";
+              addItem(isSticker ? "sticker" : type, {
+                ...(isSticker
+                  ? { imageUrl: url, caption: file.name }
+                  : {
+                      mediaUrl: url,
+                      imageUrl: url,
+                      caption: file.name.replace(/\.[^.]+$/, ""),
+                    }),
+                objectUrl: url,
+                assetKey,
+                x: 43 + ((items.length + index) % 4) * 4,
+                y: 52 + ((items.length + index) % 3) * 5,
+                angle: ((items.length + index) % 2 ? 1 : -1) * 3,
+              });
+            } catch (error) {
+              console.error(`Could not save ${file.name}.`, error);
+              setSaveStatus(`Could not add ${file.name}`);
+            }
+          }
+          event.target.value = "";
+        }
+
+        function saveAll() {
+          try {
+            const previousItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            const savedItems = items.map((item) => {
+              const { objectUrl, mediaUrl, ...savedItem } = item;
+              if (savedItem.assetKey) delete savedItem.imageUrl;
+              return savedItem;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedItems));
+            setRaisedId(null);
+            setSaveStatus("Saved");
+            window.setTimeout(() => setSaveStatus(""), 2200);
+            const currentAssetKeys = new Set(savedItems.map((item) => item.assetKey).filter(Boolean));
+            const removedAssetKeys = previousItems.map((item) => item.assetKey).filter((key) => key && !currentAssetKeys.has(key));
+            if (removedAssetKeys.length) {
+              openAssetStore().then((db) => {
+                const transaction = db.transaction("assets", "readwrite");
+                removedAssetKeys.forEach((key) => transaction.objectStore("assets").delete(key));
+                transaction.oncomplete = () => db.close();
+                transaction.onerror = () => {
+                  console.error("Could not remove unused saved media.", transaction.error);
+                  db.close();
+                };
+              }).catch((error) => console.error("Could not clean saved media storage.", error));
+            }
+          } catch (error) {
+            console.error("Could not save the scrapbook.", error);
+            setSaveStatus("Save failed — check browser storage");
+          }
+        }
+
+        function updateItem(id, changes) {
+          setItems((current) => current.map((item) => item.id === id ? { ...item, ...changes } : item));
+        }
+
+        function rotateItem(id, amount) {
+          const item = items.find((entry) => entry.id === id);
+          if (item) updateItem(id, { angle: (item.angle || 0) + amount });
+        }
+
+        function moveItem(id, offset) {
+          updateItem(id, { dx: offset.x, dy: offset.y });
+        }
+
+        function openNoteEditor(item = null) {
+          setEditingNoteId(item ? item.id : null);
+          setNoteDraft(item
+            ? { date: item.date || "", text: item.text || "", sign: item.sign || "", noteStyle: item.noteStyle || "" }
+            : { date: "", text: "", sign: "", noteStyle: "" });
+          setNoteEditorOpen(true);
+        }
+
+        function saveNote(event) {
+          event.preventDefault();
+          const note = {
+            date: noteDraft.date || "A little note",
+            text: noteDraft.text.trim() || "Write down a little something worth remembering.",
+            sign: noteDraft.sign || "— me",
+            noteStyle: noteDraft.noteStyle,
+          };
+          if (editingNoteId) updateItem(editingNoteId, note);
+          else addItem("note", { ...note, x: 47, y: 54 });
+          setNoteDraft({ date: "", text: "", sign: "", noteStyle: "" });
+          setEditingNoteId(null);
+          setNoteEditorOpen(false);
+        }
+
+        const selectedItem = items.find((item) => item.id === raisedId);
+
+        return React.createElement(
+          "main",
+          { className: "desk" },
+          React.createElement("label", { className: "theme-control", title: "Change page colors" },
+            "Page color",
+            React.createElement("input", {
+              type: "color",
+              value: themeColor,
+              "aria-label": "Change website color",
+              onChange: changeTheme,
+            }),
+          ),
+          React.createElement("span", { className: "save-status", role: "status" }, saveStatus),
+          React.createElement("button", { className: "save-button", type: "button", onClick: saveAll }, "Save page"),
+          selectedItem && React.createElement("div", { className: "selection-tools", "aria-label": "Selected item controls" },
+            React.createElement("span", null, selectedItem.type === "note" ? "Selected note" : `Selected ${selectedItem.type}`),
+            selectedItem.type === "note" && React.createElement("button", {
+              type: "button", "aria-label": "Edit selected note", title: "Edit note",
+              onClick: () => openNoteEditor(selectedItem),
+            }, "✎"),
+            React.createElement("button", {
+              type: "button", "aria-label": "Rotate selected item left", title: "Rotate left",
+              onClick: () => rotateItem(selectedItem.id, -10),
+            }, "↶"),
+            React.createElement("button", {
+              type: "button", "aria-label": "Rotate selected item right", title: "Rotate right",
+              onClick: () => rotateItem(selectedItem.id, 10),
+            }, "↷"),
+            (selectedItem.type === "photo" || selectedItem.type === "video") && React.createElement(React.Fragment, null,
+              React.createElement("button", {
+                type: "button", "aria-label": "Resize selected media smaller", title: "Make smaller",
+                onClick: () => resizeMedia(selectedItem.id, -20),
+              }, "−"),
+              React.createElement("button", {
+                type: "button", "aria-label": "Resize selected media larger", title: "Make larger",
+                onClick: () => resizeMedia(selectedItem.id, 20),
+              }, "+"),
+            ),
+            React.createElement("button", {
+              className: "remove-item", type: "button", "aria-label": "Remove selected item", title: "Remove",
+              onClick: () => removeItem(selectedItem.id),
+            }, "×"),
+          ),
+          React.createElement("button", {
+            className: "page-nav previous",
+            type: "button",
+            disabled: true,
+            "aria-label": "Previous page",
+            title: "You're on the first page",
+          }, "‹"),
+          React.createElement("a", {
+            className: "page-nav next",
+            href: "second.html",
+            "aria-label": "Next page",
+            title: "Turn to page two",
+          }, "›"),
+          React.createElement("section", { className: "scrapbook", "aria-label": "Draggable digital scrapbook" },
+            React.createElement("div", { className: "page-edge" }),
+            React.createElement("header", { className: "toolbar" },
+              React.createElement("div", { className: "brand" },
+                React.createElement("span", { className: "brand-mark", "aria-hidden": true }, "✿"),
+                React.createElement("span", null, "our little scrapbook"),
+              ),
+              React.createElement("nav", { className: "tools", "aria-label": "Add scrapbook pieces" },
+                React.createElement("button", {
+                  className: "tool-button",
+                  type: "button",
+                  onClick: () => photoInput.current.click(),
+                  "aria-label": "Add local photos",
+                  title: "Add local photos",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "▧"), "Photo"),
+                React.createElement("button", {
+                  className: "tool-button",
+                  type: "button",
+                  onClick: () => videoInput.current.click(),
+                  "aria-label": "Add local videos",
+                  title: "Add local videos",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "▶"), "Video"),
+                React.createElement("button", {
+                  className: "tool-button",
+                  type: "button",
+                  onClick: () => openNoteEditor(),
+                  "aria-label": "Write a note",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "✎"), "Note"),
+                React.createElement("button", {
+                  className: "tool-button",
+                  type: "button",
+                  onClick: () => addItem("sticker"),
+                  "aria-label": "Add a sticker",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "✿"), "Sticker"),
+                React.createElement("button", {
+                  className: "tool-button sticker-upload",
+                  type: "button",
+                  onClick: () => stickerInput.current.click(),
+                  "aria-label": "Add a local sticker image",
+                  title: "Add a local sticker image",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "⬆"), "Sticker image"),
+                React.createElement("button", {
+                  className: "tool-button",
+                  type: "button",
+                  onClick: () => addItem("tape"),
+                  "aria-label": "Add tape",
+                }, React.createElement("span", { className: "tool-icon", "aria-hidden": true }, "▰"), "Tape"),
+                React.createElement("input", {
+                  ref: photoInput,
+                  className: "file-input",
+                  type: "file",
+                  accept: "image/*",
+                  multiple: true,
+                  "aria-label": "Choose local photos",
+                  onChange: (event) => addLocalFiles(event, "photo"),
+                }),
+                React.createElement("input", {
+                  ref: videoInput,
+                  className: "file-input",
+                  type: "file",
+                  accept: "video/*",
+                  multiple: true,
+                  "aria-label": "Choose local videos",
+                  onChange: (event) => addLocalFiles(event, "video"),
+                }),
+                React.createElement("input", {
+                  ref: stickerInput,
+                  className: "file-input",
+                  type: "file",
+                  accept: "image/*",
+                  multiple: true,
+                  "aria-label": "Choose local sticker images",
+                  onChange: (event) => addLocalFiles(event, "sticker"),
+                }),
+              ),
+            ),
+            React.createElement("div", { className: "page-title" },
+              "A collection of us",
+              React.createElement("strong", null, `${Configuration.names[0]} & ${Configuration.names[1]}`),
+              React.createElement("em", null, Configuration.subtitle),
+            ),
+            ...items.map((item, index) =>
+              React.createElement(ScrapItem, {
+                key: item.id,
+                item,
+                selected: item.id === raisedId,
+                zIndex: item.id === raisedId ? 10 + items.length : index + 2,
+                onRaise: setRaisedId,
+                onRemove: removeItem,
+                onResize: resizeMedia,
+                onRotate: rotateItem,
+                onEdit: openNoteEditor,
+                onMove: moveItem,
+              }),
+            ),
+            React.createElement("div", { className: "drag-hint" }, "pick something up & move it around"),
+            React.createElement("div", { className: "page-number" }, "p. 01"),
+          ),
+          noteEditorOpen && React.createElement("div", {
+            className: "note-editor-backdrop",
+            onMouseDown: (event) => {
+              if (event.target === event.currentTarget) setNoteEditorOpen(false);
+            },
+          },
+            React.createElement("form", { className: "note-editor", onSubmit: saveNote },
+              React.createElement("h2", null, editingNoteId ? "Edit your note" : "A little note"),
+              React.createElement("label", { htmlFor: "note-date" }, "Date or heading"),
+              React.createElement("input", {
+                id: "note-date",
+                value: noteDraft.date,
+                placeholder: "A tiny reminder",
+                onChange: (event) => setNoteDraft({ ...noteDraft, date: event.target.value }),
+              }),
+              React.createElement("label", { htmlFor: "note-text" }, "Your note"),
+              React.createElement("textarea", {
+                id: "note-text",
+                required: true,
+                value: noteDraft.text,
+                placeholder: "Write something worth remembering...",
+                onChange: (event) => setNoteDraft({ ...noteDraft, text: event.target.value }),
+              }),
+              React.createElement("label", { htmlFor: "note-sign" }, "Sign off"),
+              React.createElement("input", {
+                id: "note-sign",
+                value: noteDraft.sign,
+                placeholder: "— with love",
+                onChange: (event) => setNoteDraft({ ...noteDraft, sign: event.target.value }),
+              }),
+              React.createElement("label", { htmlFor: "note-style" }, "Paper style"),
+              React.createElement("select", {
+                id: "note-style",
+                value: noteDraft.noteStyle,
+                onChange: (event) => setNoteDraft({ ...noteDraft, noteStyle: event.target.value }),
+              },
+                React.createElement("option", { value: "" }, "Sunshine yellow"),
+                React.createElement("option", { value: "lavender" }, "Lavender"),
+                React.createElement("option", { value: "rose" }, "Soft rose"),
+                React.createElement("option", { value: "mint" }, "Garden mint"),
+                React.createElement("option", { value: "sky" }, "Cloud blue"),
+              ),
+              React.createElement("div", { className: "note-editor-actions" },
+                React.createElement("button", { type: "button", onClick: () => setNoteEditorOpen(false) }, "Cancel"),
+                React.createElement("button", { type: "submit" }, editingNoteId ? "Save note" : "Add note"),
+              ),
+            ),
+          ),
+        );
+      }
+
+      createRoot(document.getElementById("root")).render(React.createElement(App));
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>

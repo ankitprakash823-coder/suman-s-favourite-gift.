@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>Our next little adventures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "DM Sans", sans-serif;
+        color: #36362f;
+        --theme-color: #58715b;
+        --desk-color: color-mix(in srgb, var(--theme-color) 12%, #e8dfce);
+        --paper-color: color-mix(in srgb, var(--theme-color) 5%, #f7f1e4);
+        --script: "Caveat", cursive;
+        background: var(--desk-color);
+      }
+
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+
+      .desk {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 34px clamp(14px, 4vw, 56px);
+        background-color: var(--desk-color);
+        background-image:
+          radial-gradient(ellipse at 18% 22%, rgba(255,255,255,.47), transparent 38%),
+          radial-gradient(ellipse at 84% 78%, rgba(172,151,111,.14), transparent 38%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+        background-size: auto, auto, 190px 190px;
+      }
+
+      .book {
+        position: relative;
+        width: min(1120px, 100%);
+        min-height: min(740px, calc(100vh - 68px));
+        overflow: hidden;
+        padding: 34px clamp(24px, 6vw, 76px) 48px;
+        border: 1px solid rgba(112,95,64,.19);
+        border-radius: 5px 8px 7px 5px;
+        background-color: var(--paper-color);
+        background-image:
+          linear-gradient(90deg, transparent 49.8%, rgba(126,111,81,.1) 50%, rgba(255,255,255,.38) 50.2%, transparent 50.55%),
+          radial-gradient(ellipse at 5% 10%, rgba(255,255,255,.7), transparent 45%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E");
+        background-size: 100% 100%, auto, 170px 170px;
+        box-shadow: 0 25px 70px rgba(63,49,28,.2), 0 3px 8px rgba(66,52,33,.1), inset 0 0 0 8px rgba(255,255,255,.21);
+      }
+
+      .book::before { position: absolute; inset: 12px; border: 1px solid rgba(130,113,81,.13); content: ""; pointer-events: none; }
+      .topline { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; color: #666252; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+      .topline a { color: inherit; text-decoration: none; }
+      .topline a:hover { color: var(--theme-color); }
+      .intro { position: relative; z-index: 1; margin: 42px auto 28px; text-align: center; }
+      .eyebrow { color: #817966; font-size: 9px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; }
+      h1 { margin: 10px 0 3px; color: #47473c; font: 500 clamp(29px,4vw,46px)/1.1 "Playfair Display",Georgia,serif; letter-spacing: -.04em; }
+      .subtitle { color: #718067; font: 25px var(--script); }
+
+      .adventure-layout {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 250px;
+        gap: 28px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        align-content: start;
+      }
+
+      .adventure {
+        position: relative;
+        display: flex;
+        min-height: 115px;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 19px 16px 15px;
+        border: 1px solid rgba(116,94,58,.12);
+        background: color-mix(in srgb, var(--theme-color) 10%, #f8e9ae);
+        box-shadow: 0 5px 12px rgba(62,49,30,.1);
+        transform: rotate(var(--tilt, -1deg));
+      }
+
+      .adventure:nth-child(4n + 2) { --tilt: 1deg; background: color-mix(in srgb, var(--theme-color) 10%, #e4ecdc); }
+      .adventure:nth-child(4n + 3) { --tilt: .6deg; background: color-mix(in srgb, var(--theme-color) 10%, #f4dfdc); }
+      .adventure:nth-child(4n + 4) { --tilt: -.8deg; background: color-mix(in srgb, var(--theme-color) 10%, #e2e8ee); }
+
+      .adventure::before {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        width: 58px;
+        height: 16px;
+        transform: translateX(-50%) rotate(-2deg);
+        background: color-mix(in srgb, var(--theme-color) 28%, #e9ca91);
+        content: "";
+      }
+
+      .check {
+        flex: 0 0 auto;
+        width: 19px;
+        height: 19px;
+        margin-top: 2px;
+        accent-color: var(--theme-color);
+        cursor: pointer;
+      }
+
+      .adventure-copy { color: #4f4d43; font: 22px/1.05 var(--script); }
+      .adventure.done .adventure-copy { color: #8a8579; text-decoration: line-through; text-decoration-color: var(--theme-color); }
+      .adventure.selected { outline: 2px solid color-mix(in srgb, var(--theme-color) 45%, transparent); outline-offset: 2px; }
+
+      .adventure-actions { position: absolute; top: 4px; right: 5px; z-index: 2; display: none; gap: 4px; }
+      .adventure.selected .adventure-actions { display: flex; }
+      .adventure-actions button {
+        display: grid; width: 23px; height: 23px; place-items: center;
+        border: 1px solid rgba(105,94,70,.2); border-radius: 50%;
+        background: rgba(255,252,244,.96); color: #555145; font-size: 13px; cursor: pointer;
+      }
+      .adventure-actions .remove-idea { color: #a64e43; }
+
+      .wish-card {
+        position: relative;
+        align-self: start;
+        padding: 22px 19px 20px;
+        border: 1px solid rgba(116,94,58,.13);
+        background: color-mix(in srgb, var(--theme-color) 7%, #fffdf6);
+        box-shadow: 0 7px 15px rgba(62,49,30,.11);
+        transform: rotate(1deg);
+      }
+
+      .wish-card::before {
+        position: absolute;
+        top: -9px;
+        left: 50%;
+        width: 66px;
+        height: 18px;
+        transform: translateX(-50%) rotate(2deg);
+        background: color-mix(in srgb, var(--theme-color) 30%, #e9ca91);
+        content: "";
+      }
+
+      .wish-icon { margin-bottom: 5px; color: var(--theme-color); font-size: 23px; }
+      .wish-card h2 { margin: 0 0 7px; color: #47473c; font: 600 27px/1 var(--script); }
+      .wish-card p { margin: 0; color: #5b584b; font: 20px/1.15 var(--script); }
+      .wish-sign { margin-top: 12px; color: #718067; font: 20px var(--script); text-align: right; }
+
+      .add-form { display: flex; gap: 7px; margin-top: 17px; }
+      .add-form input { min-width: 0; width: 100%; padding: 9px; border: 1px solid rgba(105,94,70,.2); background: rgba(255,255,255,.7); color: #38372f; font: 16px var(--script); }
+      .add-form button { width: 38px; border: 0; background: var(--theme-color); color: white; font-size: 20px; cursor: pointer; }
+      .idea-editor {
+        position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
+        padding: 18px; background: rgba(53,47,37,.34); backdrop-filter: blur(3px);
+      }
+      .idea-editor[hidden] { display: none; }
+      .idea-editor form { width: min(390px,100%); padding: 23px; border: 1px solid rgba(112,95,64,.2); background: #fbf5e8; box-shadow: 0 16px 50px rgba(39,32,23,.25); }
+      .idea-editor h2 { margin: 0 0 14px; color: #47473c; font: 600 30px var(--script); }
+      .idea-editor label { display: block; margin: 12px 0 5px; color: #716b5b; font-size: 10px; text-transform: uppercase; }
+      .idea-editor input { width: 100%; padding: 10px; border: 1px solid rgba(105,94,70,.2); background: white; color: #38372f; font: 18px var(--script); }
+      .idea-editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+      .idea-editor-actions button { padding: 8px 13px; border: 1px solid rgba(105,94,70,.2); background: #fffaf0; color: #5b584b; cursor: pointer; }
+      .idea-editor-actions button[type="submit"] { background: var(--theme-color); color: #fffdf6; }
+
+      .page-nav {
+        position: fixed; top: 50%; z-index: 5; display: grid; width: 42px; height: 42px;
+        transform: translateY(-50%); place-items: center; border: 1px solid rgba(105,94,70,.23);
+        border-radius: 50%; background: rgba(255,252,244,.88); color: #5b584b;
+        box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 20px; text-decoration: none;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .page-nav:hover { transform: translateY(-50%) scale(1.07); background: #fffaf0; }
+      .page-nav.previous { left: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+      .page-nav.next { right: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+
+      .theme-control {
+        position: fixed; bottom: 20px; left: 20px; z-index: 10; display: flex; align-items: center; gap: 7px;
+        padding: 8px 11px; border: 1px solid rgba(105,94,70,.23); border-radius: 20px;
+        background: rgba(255,252,244,.92); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12);
+        font-size: 10px; cursor: pointer;
+      }
+      .theme-control input { width: 19px; height: 19px; padding: 0; overflow: hidden; border: 1px solid rgba(105,94,70,.25); border-radius: 50%; background: transparent; cursor: pointer; }
+      .save-button { position: fixed; right: 20px; bottom: 20px; z-index: 10; padding: 9px 16px; border: 1px solid rgba(79,102,79,.3); border-radius: 20px; background: var(--theme-color); color: #fffdf6; box-shadow: 0 3px 12px rgba(64,51,30,.16); font-size: 11px; cursor: pointer; }
+      .save-status { position: fixed; right: 100px; bottom: 29px; z-index: 10; color: #5b584b; font-size: 10px; }
+      .footer { position: relative; z-index: 1; margin-top: 25px; color: #8c8574; font: 18px var(--script); text-align: center; }
+
+      @media (max-width: 760px) {
+        .desk { min-height: 100svh; padding: 12px; }
+        .book { min-height: calc(100svh - 24px); padding: 26px 24px 44px; }
+        .adventure-layout { grid-template-columns: 1fr; gap: 19px; }
+        .wish-card { max-width: 500px; width: 100%; justify-self: center; }
+        .page-nav.previous { left: 3px; }
+        .page-nav.next { right: 3px; }
+      }
+      @media (max-width: 480px) {
+        .list { grid-template-columns: 1fr; gap: 13px; }
+        .adventure { min-height: 88px; }
+        .topline { font-size: 8px; letter-spacing: .1em; }
+        .page-nav { width: 35px; height: 35px; font-size: 17px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="desk">
+      <label class="theme-control">Page color <input type="color" value="#58715b" aria-label="Change website color" /></label>
+      <a class="page-nav previous" href="second.html" aria-label="Previous page" title="Back to the notes">‹</a>
+      <a class="page-nav next" href="fourth.html" aria-label="Next page" title="Continue to the love game">›</a>
+      <article class="book">
+        <header class="topline">
+          <a href="index.html">✿ &nbsp; our little scrapbook</a>
+          <span>page three · the story continues &nbsp; <a href="fourth.html">Next page ›</a></span>
+        </header>
+        <section class="intro">
+          <div class="eyebrow">A little list for our future</div>
+          <h1>More days to remember</h1>
+          <div class="subtitle">our next little adventures ✿</div>
+        </section>
+        <section class="adventure-layout">
+          <div class="list" id="adventure-list" aria-label="Our shared wish list"></div>
+          <aside class="wish-card">
+            <div class="wish-icon">✿</div>
+            <h2>One day at a time</h2>
+            <p>We don't need a grand plan. Just somewhere new to wander, something good to eat, and each other.</p>
+            <div class="wish-sign">— ANKIT & SUMAN</div>
+            <form class="add-form" id="add-form">
+              <input id="new-adventure" aria-label="New adventure" placeholder="Add a little dream..." maxlength="100" required />
+              <button type="submit" aria-label="Add adventure">+</button>
+            </form>
+          </aside>
+        </section>
+        <footer class="footer">the best part of the future is getting there together</footer>
+      </article>
+    </main>
+    <span class="save-status" id="save-status" role="status"></span>
+    <button class="save-button" id="save-page" type="button">Save page</button>
+    <div class="idea-editor" id="idea-editor" hidden>
+      <form id="idea-form">
+        <h2>Edit your little dream</h2>
+        <label for="idea-text">Adventure</label>
+        <input id="idea-text" maxlength="100" required />
+        <div class="idea-editor-actions">
+          <button type="button" id="cancel-idea">Cancel</button>
+          <button type="submit">Save changes</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      const themePicker = document.querySelector(".theme-control input");
+      const theme = localStorage.getItem("scrapbook-theme") || "#58715b";
+      themePicker.value = theme;
+      document.documentElement.style.setProperty("--theme-color", theme);
+      themePicker.addEventListener("input", (event) => {
+        document.documentElement.style.setProperty("--theme-color", event.target.value);
+        localStorage.setItem("scrapbook-theme", event.target.value);
+      });
+
+      const key = "scrapbook-page3";
+      const starterIdeas = [
+        "Take the scenic route somewhere new",
+        "Make pancakes on a lazy Sunday",
+        "Watch the sunset with a blanket",
+        "Find a little bookshop to get lost in",
+        "Plant something and watch it grow",
+        "Have a no-phones, all-day date",
+      ];
+      let ideas;
+      try {
+        ideas = JSON.parse(localStorage.getItem(key) || "null") || starterIdeas.map((text, index) => ({ id: `idea-${index}`, text, done: false }));
+      } catch (error) {
+        console.error("Could not read the saved adventure list.", error);
+        ideas = starterIdeas.map((text, index) => ({ id: `idea-${index}`, text, done: false }));
+      }
+      const list = document.querySelector("#adventure-list");
+      const editor = document.querySelector("#idea-editor");
+      const ideaForm = document.querySelector("#idea-form");
+      const ideaInput = document.querySelector("#idea-text");
+      let selectedId = null;
+      let editingId = null;
+
+      function renderIdeas() {
+        list.replaceChildren();
+        ideas.forEach((idea, index) => {
+          const card = document.createElement("article");
+          card.className = `adventure${idea.done ? " done" : ""}${idea.id === selectedId ? " selected" : ""}`;
+          card.style.setProperty("--tilt", `${idea.angle ?? [-.8, .7, -.5, .9][index % 4]}deg`);
+          card.addEventListener("click", (event) => {
+            if (event.target.closest("button, input")) return;
+            selectedId = idea.id;
+            renderIdeas();
+          });
+          const actions = document.createElement("div");
+          actions.className = "adventure-actions";
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.setAttribute("aria-label", "Edit adventure");
+          editButton.title = "Edit";
+          editButton.textContent = "✎";
+          editButton.addEventListener("click", () => {
+            editingId = idea.id;
+            ideaInput.value = idea.text;
+            editor.hidden = false;
+            ideaInput.focus();
+          });
+          const rotateLeft = document.createElement("button");
+          rotateLeft.type = "button";
+          rotateLeft.setAttribute("aria-label", "Rotate adventure left");
+          rotateLeft.textContent = "↶";
+          rotateLeft.addEventListener("click", () => { idea.angle = (idea.angle || 0) - 5; renderIdeas(); });
+          const rotateRight = document.createElement("button");
+          rotateRight.type = "button";
+          rotateRight.setAttribute("aria-label", "Rotate adventure right");
+          rotateRight.textContent = "↷";
+          rotateRight.addEventListener("click", () => { idea.angle = (idea.angle || 0) + 5; renderIdeas(); });
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "remove-idea";
+          remove.setAttribute("aria-label", "Remove adventure");
+          remove.textContent = "×";
+          remove.addEventListener("click", () => {
+            ideas = ideas.filter((candidate) => candidate.id !== idea.id);
+            selectedId = null;
+            renderIdeas();
+          });
+          actions.append(editButton, rotateLeft, rotateRight, remove);
+          const checkbox = document.createElement("input");
+          checkbox.className = "check";
+          checkbox.type = "checkbox";
+          checkbox.checked = idea.done;
+          checkbox.setAttribute("aria-label", `Mark ${idea.text} ${idea.done ? "not done" : "done"}`);
+          checkbox.addEventListener("change", () => {
+            idea.done = checkbox.checked;
+            selectedId = idea.id;
+            renderIdeas();
+          });
+          const copy = document.createElement("span");
+          copy.className = "adventure-copy";
+          copy.textContent = idea.text;
+          card.append(actions, checkbox, copy);
+          list.append(card);
+        });
+      }
+
+      renderIdeas();
+      document.querySelector("#add-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const input = document.querySelector("#new-adventure");
+        const text = input.value.trim();
+        if (!text) return;
+        ideas.push({ id: `idea-${Date.now()}`, text, done: false });
+        input.value = "";
+        selectedId = null;
+        renderIdeas();
+      });
+      ideaForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const text = ideaInput.value.trim();
+        if (!text || !editingId) return;
+        const idea = ideas.find((candidate) => candidate.id === editingId);
+        if (idea) idea.text = text;
+        editor.hidden = true;
+        editingId = null;
+        renderIdeas();
+      });
+      document.querySelector("#cancel-idea").addEventListener("click", () => { editor.hidden = true; editingId = null; });
+      editor.addEventListener("click", (event) => {
+        if (event.target === editor) { editor.hidden = true; editingId = null; }
+      });
+      document.querySelector("#save-page").addEventListener("click", () => {
+        const status = document.querySelector("#save-status");
+        try {
+          localStorage.setItem(key, JSON.stringify(ideas));
+          selectedId = null;
+          renderIdeas();
+          status.textContent = "Saved";
+          setTimeout(() => { status.textContent = ""; }, 2200);
+        } catch (error) {
+          console.error("Could not save the adventure list.", error);
+          status.textContent = "Save failed — check browser storage";
+        }
+      });
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>

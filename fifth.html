@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>How well do we know us?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root { color-scheme: light; font-family: "DM Sans",sans-serif; color: #36362f; --theme-color: #58715b; --desk: color-mix(in srgb,var(--theme-color) 12%,#e8dfce); --paper: color-mix(in srgb,var(--theme-color) 5%,#f7f1e4); --script: "Caveat",cursive; background: var(--desk); }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+      .desk { min-height: 100vh; display: grid; place-items: center; padding: 34px clamp(14px,4vw,56px); background: var(--desk); background-image: radial-gradient(ellipse at 18% 22%,rgba(255,255,255,.47),transparent 38%),radial-gradient(ellipse at 84% 78%,rgba(172,151,111,.14),transparent 38%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E"); background-size: auto,auto,190px 190px; }
+      .book { position: relative; width: min(1120px,100%); min-height: min(740px,calc(100vh - 68px)); padding: 34px clamp(24px,6vw,76px) 48px; border: 1px solid rgba(112,95,64,.19); border-radius: 5px 8px 7px 5px; background-color: var(--paper); background-image: linear-gradient(90deg,transparent 49.8%,rgba(126,111,81,.1) 50%,rgba(255,255,255,.38) 50.2%,transparent 50.55%),radial-gradient(ellipse at 5% 10%,rgba(255,255,255,.7),transparent 45%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E"); background-size: 100% 100%,auto,170px 170px; box-shadow: 0 25px 70px rgba(63,49,28,.2),0 3px 8px rgba(66,52,33,.1),inset 0 0 0 8px rgba(255,255,255,.21); }
+      .book::before { position: absolute; inset: 12px; border: 1px solid rgba(130,113,81,.13); content: ""; pointer-events: none; }
+      .topline { position: relative; z-index: 1; display: flex; justify-content: space-between; color: #666252; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      .topline a { color: inherit; text-decoration: none; }
+      .intro { position: relative; z-index: 1; margin: 32px auto 21px; text-align: center; }
+      .eyebrow { color: #817966; font-size: 9px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; }
+      h1 { margin: 9px 0 2px; color: #47473c; font: 500 clamp(29px,4vw,44px)/1.1 "Playfair Display",Georgia,serif; letter-spacing: -.04em; }
+      .subtitle { color: #718067; font: 24px var(--script); }
+      .scoreboard { position: relative; z-index: 1; display: flex; justify-content: center; gap: 12px; margin: 17px auto 20px; }
+      .score { min-width: 125px; padding: 9px 14px; border: 1px solid rgba(116,94,58,.12); background: color-mix(in srgb,var(--theme-color) 8%,#fffdf6); text-align: center; box-shadow: 0 4px 10px rgba(62,49,30,.08); }
+      .score span { display: block; color: #817966; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+      .score strong { display: block; margin-top: 3px; color: #47473c; font: 600 24px var(--script); }
+      .quiz { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; max-width: 850px; margin: 0 auto; }
+      .question { min-width: 0; padding: 15px 17px; border: 1px solid rgba(116,94,58,.13); background: color-mix(in srgb,var(--theme-color) 9%,#f8e9ae); box-shadow: 0 5px 12px rgba(62,49,30,.08); }
+      .question:nth-child(4n + 2) { background: color-mix(in srgb,var(--theme-color) 9%,#e4ecdc); }
+      .question:nth-child(4n + 3) { background: color-mix(in srgb,var(--theme-color) 9%,#f4dfdc); }
+      .question:nth-child(4n + 4) { background: color-mix(in srgb,var(--theme-color) 9%,#e2e8ee); }
+      .question h2 { margin: 0 0 9px; color: #47473c; font: 600 22px/1 var(--script); }
+      .answer-box { display: grid; gap: 7px; margin-top: 13px; }
+      .answer-box label { color: #817966; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+      .answer-box textarea { width: 100%; min-height: 76px; resize: vertical; padding: 9px 10px; border: 1px solid rgba(105,94,70,.2); background: rgba(255,255,255,.72); color: #555145; font: 18px/1.1 var(--script); }
+      .answer-box textarea:focus { outline: 2px solid color-mix(in srgb,var(--theme-color) 42%,transparent); }
+      .answer-actions { display: flex; align-items: center; gap: 9px; }
+      .answer-status { min-height: 18px; color: #58715b; font: 16px var(--script); }
+      .answer { display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; color: #555145; font: 18px/1.05 var(--script); cursor: pointer; }
+      .answer input { flex: 0 0 auto; margin-top: 3px; accent-color: var(--theme-color); }
+      .question.correct { outline: 2px solid rgba(74,128,81,.45); }
+      .question.incorrect { outline: 2px solid rgba(173,88,77,.4); }
+      .game-actions { position: relative; z-index: 1; display: flex; justify-content: center; gap: 9px; margin: 17px auto 0; }
+      .button { padding: 10px 17px; border: 1px solid rgba(105,94,70,.2); background: #fffaf0; color: #5b584b; cursor: pointer; }
+      .button.primary { border-color: var(--theme-color); background: var(--theme-color); color: white; }
+      .message { min-height: 26px; margin-top: 10px; color: #58715b; font: 20px var(--script); text-align: center; }
+      .page-nav { position: fixed; top: 50%; z-index: 5; display: grid; width: 42px; height: 42px; transform: translateY(-50%); place-items: center; border: 1px solid rgba(105,94,70,.23); border-radius: 50%; background: rgba(255,252,244,.9); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 20px; text-decoration: none; }
+      .page-nav.previous { left: max(8px,calc((100% - 1120px)/2 - 54px)); }
+      .page-nav.next { right: max(8px,calc((100% - 1120px)/2 - 54px)); }
+      .theme-control { position: fixed; bottom: 20px; left: 20px; z-index: 10; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(105,94,70,.23); border-radius: 20px; background: rgba(255,252,244,.92); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 10px; cursor: pointer; }
+      .theme-control input { width: 19px; height: 19px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+      .save-button { position: fixed; right: 20px; bottom: 20px; z-index: 10; padding: 9px 16px; border: 1px solid rgba(79,102,79,.3); border-radius: 20px; background: var(--theme-color); color: #fffdf6; box-shadow: 0 3px 12px rgba(64,51,30,.16); font-size: 11px; cursor: pointer; }
+      .save-status { position: fixed; right: 112px; bottom: 29px; z-index: 10; color: #5b584b; font-size: 10px; }
+      @media(max-width:680px) { .desk { min-height: 100svh; padding: 12px; } .book { min-height: calc(100svh - 24px); padding: 26px 20px 46px; } .quiz { grid-template-columns: 1fr; gap: 9px; } .question { padding: 12px 14px; } .answer { font-size: 17px; } .scoreboard { gap: 6px; } .score { min-width: 100px; padding: 8px; } .page-nav { width: 35px; height: 35px; } .page-nav.previous { left: 3px; } .page-nav.next { right: 3px; } }
+    </style>
+  </head>
+  <body>
+    <main class="desk">
+      <label class="theme-control">Page color <input type="color" value="#58715b" aria-label="Change website color" /></label>
+      <a class="page-nav previous" href="fourth.html" aria-label="Previous page">‹</a>
+      <a class="page-nav next" href="sixth.html" aria-label="Next page">›</a>
+      <article class="book">
+        <header class="topline"><a href="index.html">✿ &nbsp; our little scrapbook</a><span>page five · 25 little questions</span></header>
+        <section class="intro">
+          <div class="eyebrow">A sweet little quiz</div>
+          <h1>How well do we know us?</h1>
+          <div class="subtitle">there are no wrong ways to love ✿</div>
+        </section>
+        <section class="scoreboard" aria-label="Question page">
+          <div class="score"><span>Page</span><strong id="page-number">1 / 5</strong></div>
+          <div class="score"><span>Questions</span><strong id="question-range">1–5</strong></div>
+        </section>
+        <form class="quiz" id="quiz"></form>
+        <div class="game-actions"><button class="button" id="previous-page" type="button">← Previous 5</button><button class="button primary" id="next-page" type="button">Next 5 →</button></div>
+        <div class="message" id="message" aria-live="polite">Use the buttons to move through our questions.</div>
+      </article>
+    </main>
+    <span class="save-status" id="save-status" role="status"></span>
+    <button class="save-button" id="save-page" type="button">Save page</button>
+    <script>
+      const themePicker = document.querySelector(".theme-control input");
+      themePicker.value = localStorage.getItem("scrapbook-theme") || "#58715b";
+      document.documentElement.style.setProperty("--theme-color", themePicker.value);
+      themePicker.addEventListener("input", (event) => {
+        localStorage.setItem("scrapbook-theme", event.target.value);
+        document.documentElement.style.setProperty("--theme-color", event.target.value);
+      });
+
+      const ANSWERS_KEY = "scrapbook-game-quiz-answers";
+      const PAGE_KEY = "scrapbook-game-quiz-page";
+      let savedAnswers = {};
+      try {
+        savedAnswers = JSON.parse(localStorage.getItem(ANSWERS_KEY) || "{}");
+        if (!savedAnswers || typeof savedAnswers !== "object" || Array.isArray(savedAnswers)) savedAnswers = {};
+      } catch (error) {
+        console.error("Could not read saved question answers.", error);
+      }
+
+      const questions = [
+        "Agar main tumse rooth jaun aur tumhe mujhe manana ho, toh tum kya karogi?",
+        "Agar hum dono gaon ke mele mein kho jaayein, toh pehle mujhe dhoondhogi ya jalebi khane chali jaogi? 😂",
+        "Agar hum buddhe ho jaayein aur main tab bhi tumhe chhedta rahun, toh tum kya karogi? 😂",
+        "Agar main tumse gussa hokar kahun ki aaj mujhe manana mat, toh tum sach mein nahi manaogi ya meri baat ko ignore kar dogi?",
+        "Agar hum dono mela dekhne jaayein aur main tumhara haath chhodkar golgappe wale ke paas bhaag jaun, toh tumhara reaction kya hoga? 😂",
+        "Agar main neend mein tumhara naam lene ke bajaye jalebi maangne lagun, toh tum kya karogi?",
+        "Agar tumhe pata chale ki main chupke se tumhari banayi hui roti ke bajaye achar kha kar pet bhar leta hoon, toh kya saza dogi? 😂",
+        "Agar main tumhare saamne romantic banne ki koshish karun aur beech mein mujhe chheenk aa jaaye, toh mera romance khatam ya jaari rahega?",
+        "Agar hum dono mein jhagda ho aur galti meri ho, lekin main sorry bolne ke bajaye tumhare liye samosa le aaun, toh maaf karogi?",
+        "Agar main tumhari saari choodiyan pehen kar tumhare saamne aa jaun, toh tum hasogi ya mujhe ghar se bahar nikaal dogi? 😂",
+        "Agar main kahun ki aaj se ghar ke saare kaam main karunga, lekin agle din jhaadu lagate-lagate so jaun, toh kya karogi?",
+        "Agar hum khet ke paas ghoomne jaayein aur koi bakri tumhare dupatte ko khaane lage, toh pehle dupatta bachaogi ya mujhe bulaogi? 😂",
+        "Agar main kahun ki tumhare bina mera dil nahi lagta, aur tum kaho ki toh phir mere paas hi baitho, toh kya main apna saara kaam chhod dunga? 😂",
+        "Agar main tumhare saath chhupam-chhupai khelun aur tum mujhe dhoondh hi na pao, toh tum mujhe dhoondhna jaari rakhogi ya ghar chali jaogi?",
+        "Agar tum mujhe bazaar bhejo ek cheez laane aur main paanch cheezein lekar aa jaun, lekin wahi ek cheez bhool jaun, toh kya karogi?",
+        "Agar main kahun ki aaj tum jo banaogi wahi khaunga, aur tum jaanbujhkar bahut teekhi sabzi bana do, toh kya main pyaar ke liye kha lunga? 😂",
+        "Agar main tumse poochhun ki main zyada cute hoon ya bandar, toh sach bataogi ya hamara rishta bachane ke liye jhooth bol dogi?",
+        "Agar hum dono baarish mein bheeg rahe hon aur main achanak tumhare saamne dance karne lagun, toh tum mere saath nachogi ya mujhe pagal samjhogi?",
+        "Agar main tumhe ek din ke liye apna saara khana khila doon aur khud bhookha reh jaun, toh tum mujhe apna khana dogi ya saara khud kha jaogi? 😂",
+        "Agar main tumhari saheliyon ke saamne tumhari tareef karte-karte tumhare bachpan ke saare raaz khol doon, toh tum mujhe baad mein kya saza dogi?",
+        "Agar hum budhape mein baithkar jhagda karein ki pehle kisne propose kiya tha, toh faisla kaun karega? 😂",
+        "Agar main tumhare saamne romantic banne ki koshish karun aur tumhe hansi aa jaaye, toh kya tum mujhe phir se romance karne ka mauka dogi?",
+        "Agar main kahun ki aaj tum meri rani ho aur main tumhara naukar, toh sabse pehla kaam kya karwaogi?",
+        "Agar main tumhe chocolate doon aur tum kaho ki mujhe chocolate nahi chahiye, toh kya main khud kha sakta hoon? 😂",
+        "Agar budhape mein meri yaadasht chali jaaye aur main tumse dobara poochhun ki kya tum mujhse shaadi karogi, toh tum mujhe dobara haan bologi ya pehle meri harkaton ki list sunaogi? 😂❤️",
+      ];
+      const quiz = document.querySelector("#quiz");
+      const pageCount = Math.ceil(questions.length / 5);
+      const savedPage = Number(localStorage.getItem(PAGE_KEY));
+      let currentPage = Number.isInteger(savedPage) && savedPage >= 0 && savedPage < pageCount ? savedPage : 0;
+
+      function savePage() {
+        const start = currentPage * 5;
+        quiz.querySelectorAll("textarea").forEach((textarea, index) => {
+          savedAnswers[start + index] = textarea.value;
+        });
+        try {
+          localStorage.setItem(ANSWERS_KEY, JSON.stringify(savedAnswers));
+          localStorage.setItem(PAGE_KEY, String(currentPage));
+          quiz.querySelectorAll(".answer-status").forEach((status) => { status.textContent = "Saved"; });
+          document.querySelector("#save-status").textContent = "Saved";
+        } catch (error) {
+          console.error("Could not save quiz answers.", error);
+          document.querySelector("#save-status").textContent = "Save failed — check browser storage";
+        }
+      }
+
+      function renderQuiz() {
+        quiz.replaceChildren();
+        const start = currentPage * 5;
+        const pageQuestions = questions.slice(start, start + 5);
+        pageQuestions.forEach((question, index) => {
+          const card = document.createElement("section");
+          card.className = "question";
+          const heading = document.createElement("h2");
+          heading.textContent = `${start + index + 1}. ${question}`;
+          const questionIndex = start + index;
+          const answerBox = document.createElement("div");
+          answerBox.className = "answer-box";
+          const label = document.createElement("label");
+          label.htmlFor = `answer-${questionIndex}`;
+          label.textContent = "Your answer";
+          const textarea = document.createElement("textarea");
+          textarea.id = `answer-${questionIndex}`;
+          textarea.maxLength = 2000;
+          textarea.placeholder = "Write your answer here...";
+          textarea.value = typeof savedAnswers[questionIndex] === "string" ? savedAnswers[questionIndex] : "";
+          const actions = document.createElement("div");
+          actions.className = "answer-actions";
+          const saveButton = document.createElement("button");
+          saveButton.type = "button";
+          saveButton.className = "button primary";
+          saveButton.textContent = "Save answer";
+          const status = document.createElement("span");
+          status.className = "answer-status";
+          status.setAttribute("role", "status");
+          saveButton.addEventListener("click", () => {
+            savedAnswers[questionIndex] = textarea.value;
+            try {
+              localStorage.setItem(ANSWERS_KEY, JSON.stringify(savedAnswers));
+              status.textContent = "Answer saved";
+            } catch (error) {
+              console.error("Could not save this question answer.", error);
+              status.textContent = "Could not save. Please try again.";
+            }
+          });
+          actions.append(saveButton, status);
+          answerBox.append(label, textarea, actions);
+          card.append(heading, answerBox);
+          quiz.append(card);
+        });
+        const end = start + pageQuestions.length;
+        document.querySelector("#page-number").textContent = `${currentPage + 1} / ${pageCount}`;
+        document.querySelector("#question-range").textContent = `${start + 1}–${end}`;
+        document.querySelector("#previous-page").disabled = currentPage === 0;
+        document.querySelector("#next-page").textContent = currentPage === pageCount - 1 ? "Start over ↺" : "Next 5 →";
+      }
+
+      renderQuiz();
+      document.querySelector("#previous-page").addEventListener("click", () => {
+        if (currentPage > 0) {
+          currentPage -= 1;
+          renderQuiz();
+        }
+      });
+      document.querySelector("#next-page").addEventListener("click", () => {
+        currentPage = currentPage === pageCount - 1 ? 0 : currentPage + 1;
+        renderQuiz();
+      });
+      document.querySelector("#save-page").addEventListener("click", savePage);
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>

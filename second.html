@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>Little notes for you</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "DM Sans", sans-serif;
+        color: #36362f;
+        background: var(--desk-color);
+        --theme-color: #58715b;
+        --desk-color: color-mix(in srgb, var(--theme-color) 12%, #e8dfce);
+        --paper-color: color-mix(in srgb, var(--theme-color) 5%, #f7f1e4);
+        --script: "Caveat", cursive;
+      }
+
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+
+      .desk {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        overflow: hidden;
+        padding: 34px clamp(14px, 4vw, 56px);
+        background-color: var(--desk-color);
+        background-image:
+          radial-gradient(ellipse at 18% 22%, rgba(255, 255, 255, .47), transparent 38%),
+          radial-gradient(ellipse at 84% 78%, rgba(172, 151, 111, .14), transparent 38%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+        background-size: auto, auto, 190px 190px;
+      }
+
+      .book {
+        position: relative;
+        width: min(1120px, 100%);
+        min-height: min(740px, calc(100vh - 68px));
+        overflow: hidden;
+        padding: 34px clamp(24px, 6vw, 76px) 48px;
+        border: 1px solid rgba(112, 95, 64, .19);
+        border-radius: 5px 8px 7px 5px;
+        background-color: var(--paper-color);
+        background-image:
+          linear-gradient(90deg, transparent 49.8%, rgba(126, 111, 81, .10) 50%, rgba(255, 255, 255, .38) 50.2%, transparent 50.55%),
+          radial-gradient(ellipse at 5% 10%, rgba(255, 255, 255, .7), transparent 45%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E");
+        background-size: 100% 100%, auto, 170px 170px;
+        box-shadow: 0 25px 70px rgba(63, 49, 28, .2), 0 3px 8px rgba(66, 52, 33, .1), inset 0 0 0 8px rgba(255, 255, 255, .21);
+      }
+
+      .book::before {
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(130, 113, 81, .13);
+        content: "";
+        pointer-events: none;
+      }
+
+      .topline {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #666252;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+      }
+
+      .topline a { color: inherit; text-decoration: none; }
+      .topline a:hover { color: #58715b; }
+      .title {
+        position: relative;
+        z-index: 1;
+        margin: 42px 0 30px;
+        color: #47473c;
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(29px, 4vw, 46px);
+        font-weight: 500;
+        letter-spacing: -.04em;
+        text-align: center;
+      }
+
+      .title span {
+        display: block;
+        margin-top: 2px;
+        color: #718067;
+        font-family: var(--script);
+        font-size: 25px;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+
+      .notes {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        max-width: 850px;
+        margin: 0 auto;
+      }
+
+      .letter {
+        position: relative;
+        min-height: calc(205px * var(--note-scale, 1));
+        padding: calc(21px * var(--note-scale, 1)) calc(24px * var(--note-scale, 1)) calc(19px * var(--note-scale, 1));
+        border: 1px solid rgba(116, 94, 58, .13);
+        box-shadow: 0 7px 15px rgba(62, 49, 30, .11);
+        transform: rotate(var(--tilt, -1deg));
+      }
+
+      .letter:nth-child(4n + 1) { --tilt: -1.2deg; background: color-mix(in srgb, var(--theme-color) 13%, #f8e9ae); }
+      .letter:nth-child(4n + 2) { --tilt: 1deg; background: color-mix(in srgb, var(--theme-color) 13%, #e4ecdc); }
+      .letter:nth-child(4n + 3) { --tilt: .7deg; background: color-mix(in srgb, var(--theme-color) 13%, #f4dfdc); }
+      .letter:nth-child(4n + 4) { --tilt: -0.8deg; background: color-mix(in srgb, var(--theme-color) 13%, #e2e8ee); }
+
+      .letter::before {
+        position: absolute;
+        top: -9px;
+        left: 50%;
+        width: 61px;
+        height: 18px;
+        transform: translateX(-50%) rotate(-2deg);
+        background: color-mix(in srgb, var(--theme-color) 32%, #e9ca91);
+        content: "";
+      }
+
+      .letter:nth-child(4n + 2)::before { background: color-mix(in srgb, var(--theme-color) 32%, #a1b596); }
+      .letter:nth-child(4n + 3)::before { background: color-mix(in srgb, var(--theme-color) 32%, #d69f97); }
+      .letter:nth-child(4n + 4)::before { background: color-mix(in srgb, var(--theme-color) 32%, #92a5b8); }
+
+      .letter.palette-sunshine { background: #f8e9ae; }
+      .letter.palette-lavender { background: #e6dcf3; }
+      .letter.palette-rose { background: #f5dcd9; }
+      .letter.palette-mint { background: #deebdc; }
+      .letter.palette-sky { background: #dce8f1; }
+
+      .letter-date {
+        margin-bottom: 8px;
+        color: #72705f;
+        font-family: var(--script);
+        font-size: calc(17px * var(--note-scale, 1));
+      }
+
+      .letter h2 {
+        margin: 0 0 6px;
+        color: #46463c;
+        font-family: var(--script);
+        font-size: calc(27px * var(--note-scale, 1));
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .letter p {
+        margin: 0;
+        color: #4f4d43;
+        font-family: var(--script);
+        font-size: calc(23px * var(--note-scale, 1));
+        line-height: 1.12;
+      }
+
+      .signoff {
+        margin-top: 8px;
+        color: #718067;
+        font-family: var(--script);
+        font-size: calc(21px * var(--note-scale, 1));
+        text-align: right;
+      }
+
+      .letter-actions {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 2;
+        display: flex;
+        gap: 3px;
+        opacity: .78;
+      }
+
+      .letter-actions[hidden] { display: none; }
+      .letter-actions:hover, .letter-actions:focus-within { opacity: 1; }
+      .letter-actions button {
+        display: grid;
+        width: 23px;
+        height: 23px;
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .2);
+        border-radius: 50%;
+        background: rgba(255, 252, 244, .92);
+        color: #555145;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .letter-actions .remove-note { color: #a64e43; }
+
+      .note-dialog-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: rgba(53, 47, 37, .34);
+        backdrop-filter: blur(3px);
+      }
+      .note-dialog-backdrop[hidden] { display: none; }
+
+      .note-dialog {
+        width: min(440px, 100%);
+        padding: 24px;
+        border: 1px solid rgba(112, 95, 64, .2);
+        background: #fbf5e8;
+        box-shadow: 0 16px 50px rgba(39, 32, 23, .25);
+      }
+
+      .note-dialog h2 { margin: 0 0 14px; color: #47473c; font-family: var(--script); font-size: 30px; }
+      .note-dialog label { display: block; margin: 11px 0 5px; color: #716b5b; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
+      .note-dialog input, .note-dialog textarea, .note-dialog select {
+        width: 100%; padding: 9px 10px; border: 1px solid rgba(105, 94, 70, .2);
+        background: rgba(255,255,255,.62); color: #38372f; font: 17px var(--script);
+      }
+      .note-dialog textarea { min-height: 100px; resize: vertical; }
+      .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+      .dialog-actions button, .add-note {
+        padding: 8px 13px; border: 1px solid rgba(105, 94, 70, .2);
+        background: #fffaf0; color: #5b584b; cursor: pointer;
+      }
+      .dialog-actions button[type="submit"], .add-note { background: var(--theme-color); color: #fffdf6; }
+
+      .page-tools { display: flex; align-items: center; gap: 9px; }
+      .page-tools .add-note { font: 11px "DM Sans", sans-serif; text-decoration: none; }
+      .save-button {
+        position: fixed; right: 20px; bottom: 20px; z-index: 10;
+        padding: 9px 16px; border: 1px solid rgba(79,102,79,.3); border-radius: 20px;
+        background: var(--theme-color); color: #fffdf6; box-shadow: 0 3px 12px rgba(64,51,30,.16);
+        font-size: 11px; cursor: pointer;
+      }
+      .save-status { position: fixed; right: 100px; bottom: 29px; z-index: 10; color: #5b584b; font-size: 10px; }
+
+      .theme-control {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 11px;
+        border: 1px solid rgba(105, 94, 70, .23);
+        border-radius: 20px;
+        background: rgba(255, 252, 244, .92);
+        color: #5b584b;
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .12);
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .theme-control input {
+        width: 19px;
+        height: 19px;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid rgba(105, 94, 70, .25);
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .footer {
+        position: relative;
+        z-index: 1;
+        margin-top: 24px;
+        color: #8c8574;
+        font-family: var(--script);
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .page-nav {
+        position: fixed;
+        top: 50%;
+        z-index: 5;
+        display: grid;
+        width: 42px;
+        height: 42px;
+        transform: translateY(-50%);
+        place-items: center;
+        border: 1px solid rgba(105, 94, 70, .23);
+        border-radius: 50%;
+        background: rgba(255, 252, 244, .88);
+        color: #5b584b;
+        box-shadow: 0 3px 12px rgba(64, 51, 30, .12);
+        font-size: 20px;
+        text-decoration: none;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .page-nav:hover { transform: translateY(-50%) scale(1.07); background: #fffaf0; }
+      .page-nav.previous { left: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+      .page-nav.next { right: max(8px, calc((100% - 1120px) / 2 - 54px)); }
+
+      @media (max-width: 680px) {
+        .desk { min-height: 100svh; padding: 10px; place-items: start center; overflow: visible; }
+        .book { min-height: calc(100svh - 20px); padding: 26px 23px 42px; }
+        .title { margin: 35px 0 25px; }
+        .notes { gap: 14px; }
+        .letter { min-height: 190px; padding: 17px 15px; }
+        .letter h2 { font-size: 23px; }
+        .letter p { font-size: 20px; }
+        .page-nav { width: 35px; height: 35px; font-size: 17px; }
+        .page-nav.previous { left: 3px; }
+          .page-nav.next { right: 3px; }
+      }
+
+      @media (max-width: 430px) {
+        .notes { grid-template-columns: 1fr; gap: 16px; }
+        .letter { min-height: calc(160px * var(--note-scale, 1)); }
+        .book { padding-bottom: 36px; }
+      }
+
+      @media (max-width: 680px) {
+        .letter {
+          min-height: calc(190px * var(--note-scale, 1));
+          padding: calc(17px * var(--note-scale, 1)) calc(15px * var(--note-scale, 1));
+        }
+        .letter h2 { font-size: calc(23px * var(--note-scale, 1)); }
+        .letter p { font-size: calc(20px * var(--note-scale, 1)); }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="desk">
+      <label class="theme-control" title="Change page colors">
+        Page color
+        <input type="color" value="#58715b" aria-label="Change website color" />
+      </label>
+      <a class="page-nav previous" href="index.html" aria-label="Previous page" title="Back to the scrapbook">‹</a>
+      <a class="page-nav next" href="third.html" aria-label="Next page" title="Continue to page three">›</a>
+      <article class="book">
+        <header class="topline">
+          <a href="index.html">✿ &nbsp; our little scrapbook</a>
+          <div class="page-tools">
+            <span>page two · just for you</span>
+            <button class="add-note" id="add-note" type="button">＋ Add note</button>
+          </div>
+        </header>
+        <h1 class="title">A few things I want you to know<span>little notes from my heart</span></h1>
+        <section class="notes" aria-label="Little love notes">
+          <article class="letter">
+            <div class="letter-date">For an ordinary Tuesday</div>
+            <h2>You make the little things lovely.</h2>
+            <p>A shared coffee, your laugh from the next room, walking home together. Somehow, with you, the everyday becomes my favorite.</p>
+            <div class="signoff">always, me</div>
+          </article>
+          <article class="letter">
+            <div class="letter-date">Keep this one close</div>
+            <h2>In case you forget...</h2>
+            <p>You are someone’s safest place, brightest thought, and very favorite hello. Mine, especially.</p>
+            <div class="signoff">a little reminder ♡</div>
+          </article>
+          <article class="letter">
+            <div class="letter-date">A wish for us</div>
+            <h2>More slow mornings.</h2>
+            <p>More tiny adventures, songs in the kitchen, sunsets we stop to look at, and all the time in the world beside you.</p>
+            <div class="signoff">here’s to us</div>
+          </article>
+          <article class="letter">
+            <div class="letter-date">The important part</div>
+            <h2>I choose you. Still.</h2>
+            <p>On the big days and the quiet ones. In every new chapter, I’m grateful that it’s your hand I get to hold.</p>
+            <div class="signoff">with all my love</div>
+          </article>
+        </section>
+        <footer class="footer">fold this page into your pocket & take it with you ✿</footer>
+      </article>
+    </main>
+    <span class="save-status" id="save-status" role="status"></span>
+    <button class="save-button" id="save-page" type="button">Save page</button>
+    <div class="note-dialog-backdrop" id="note-backdrop" hidden>
+      <form class="note-dialog" id="note-form">
+        <h2 id="dialog-title">A little note</h2>
+        <label for="note-date">Date or heading</label>
+        <input id="note-date" />
+        <label for="note-heading">Note title</label>
+        <input id="note-heading" />
+        <label for="note-copy">Your note</label>
+        <textarea id="note-copy" required></textarea>
+        <label for="note-sign">Sign off</label>
+        <input id="note-sign" />
+        <label for="note-palette">Paper design</label>
+        <select id="note-palette">
+          <option value="sunshine">Sunshine</option>
+          <option value="lavender">Lavender</option>
+          <option value="rose">Soft rose</option>
+          <option value="mint">Garden mint</option>
+          <option value="sky">Cloud blue</option>
+        </select>
+        <div class="dialog-actions">
+          <button type="button" id="cancel-note">Cancel</button>
+          <button type="submit">Save note</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      const themePicker = document.querySelector(".theme-control input");
+      const savedTheme = localStorage.getItem("scrapbook-theme") || "#58715b";
+      themePicker.value = savedTheme;
+      document.documentElement.style.setProperty("--theme-color", savedTheme);
+      themePicker.addEventListener("input", (event) => {
+        const color = event.target.value;
+        document.documentElement.style.setProperty("--theme-color", color);
+        localStorage.setItem("scrapbook-theme", color);
+      });
+
+      const STORAGE_KEY = "scrapbook-page2";
+      const notesContainer = document.querySelector(".notes");
+      const noteForm = document.querySelector("#note-form");
+      const backdrop = document.querySelector("#note-backdrop");
+      const status = document.querySelector("#save-status");
+      const fields = {
+        date: document.querySelector("#note-date"),
+        heading: document.querySelector("#note-heading"),
+        text: document.querySelector("#note-copy"),
+        sign: document.querySelector("#note-sign"),
+        palette: document.querySelector("#note-palette"),
+      };
+      let nextId = 0;
+      let editingId = null;
+      let selectedId = null;
+      let notes;
+
+      function escapeText(element, selector) {
+        return element.querySelector(selector)?.textContent.trim() || "";
+      }
+
+      function readStartingNotes() {
+        return [...notesContainer.querySelectorAll(".letter")].map((element, index) => ({
+          id: `starting-${index}`,
+          date: escapeText(element, ".letter-date"),
+          heading: escapeText(element, "h2"),
+          text: escapeText(element, "p"),
+          sign: escapeText(element, ".signoff"),
+          palette: ["sunshine", "mint", "rose", "sky"][index],
+          angle: [-1.2, 1, .7, -.8][index],
+          scale: 1,
+        }));
+      }
+
+      function createButton(label, title, action, className = "") {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("aria-label", label);
+        button.title = title;
+        button.textContent = action;
+        if (className) button.className = className;
+        return button;
+      }
+
+      function renderNotes() {
+        notesContainer.replaceChildren();
+        notes.forEach((note) => {
+          const card = document.createElement("article");
+          card.className = `letter palette-${note.palette || "sunshine"}`;
+          if (note.id === selectedId) card.classList.add("selected");
+          card.style.setProperty("--tilt", `${note.angle || 0}deg`);
+          card.style.setProperty("--note-scale", note.scale || 1);
+          card.addEventListener("click", (event) => {
+            if (event.target.closest("button")) return;
+            selectedId = note.id;
+            renderNotes();
+          });
+          const actions = document.createElement("div");
+          actions.className = "letter-actions";
+          actions.hidden = note.id !== selectedId;
+          actions.append(
+            createButton("Edit note", "Edit note", "✎"),
+            createButton("Rotate note left", "Rotate left", "↶"),
+            createButton("Rotate note right", "Rotate right", "↷"),
+            createButton("Make note smaller", "Make smaller", "−"),
+            createButton("Make note larger", "Make larger", "+"),
+            createButton("Remove note", "Remove note", "×", "remove-note"),
+          );
+          actions.addEventListener("click", (event) => {
+            const button = event.target.closest("button");
+            if (!button) return;
+            if (button.getAttribute("aria-label") === "Edit note") {
+              openEditor(note);
+            } else if (button.classList.contains("remove-note")) {
+              notes = notes.filter((candidate) => candidate.id !== note.id);
+              selectedId = null;
+              renderNotes();
+            } else if (button.getAttribute("aria-label").startsWith("Rotate")) {
+              note.angle += button.getAttribute("aria-label").endsWith("left") ? -5 : 5;
+              card.style.setProperty("--tilt", `${note.angle}deg`);
+            } else {
+              note.scale = Math.min(1.5, Math.max(.7, note.scale + (button.textContent === "+" ? .1 : -.1)));
+              card.style.setProperty("--note-scale", note.scale);
+            }
+          });
+          const date = document.createElement("div");
+          date.className = "letter-date";
+          date.textContent = note.date;
+          const heading = document.createElement("h2");
+          heading.textContent = note.heading;
+          const copy = document.createElement("p");
+          copy.textContent = note.text;
+          const sign = document.createElement("div");
+          sign.className = "signoff";
+          sign.textContent = note.sign;
+          card.append(actions, date, heading, copy, sign);
+          notesContainer.append(card);
+        });
+      }
+
+      function openEditor(note = null) {
+        editingId = note?.id || null;
+        document.querySelector("#dialog-title").textContent = note ? "Edit your note" : "Write a new note";
+        fields.date.value = note?.date || "";
+        fields.heading.value = note?.heading || "";
+        fields.text.value = note?.text || "";
+        fields.sign.value = note?.sign || "";
+        fields.palette.value = note?.palette || "sunshine";
+        backdrop.hidden = false;
+        fields.date.focus();
+      }
+
+      function closeEditor() {
+        backdrop.hidden = true;
+        editingId = null;
+      }
+
+      const restoredNotes = localStorage.getItem(STORAGE_KEY);
+      notes = restoredNotes ? JSON.parse(restoredNotes) : readStartingNotes();
+      renderNotes();
+      document.querySelector("#add-note").addEventListener("click", () => openEditor());
+      document.querySelector("#cancel-note").addEventListener("click", closeEditor);
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) closeEditor();
+      });
+      noteForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const updated = {
+          id: editingId || `note-${Date.now()}-${nextId++}`,
+          date: fields.date.value.trim() || "A little note",
+          heading: fields.heading.value.trim() || "A thought for you",
+          text: fields.text.value.trim(),
+          sign: fields.sign.value.trim() || "with love",
+          palette: fields.palette.value,
+          angle: 0,
+          scale: 1,
+        };
+        if (editingId) notes = notes.map((note) => note.id === editingId ? { ...note, ...updated, angle: note.angle, scale: note.scale } : note);
+        else notes.push(updated);
+        selectedId = updated.id;
+        renderNotes();
+        closeEditor();
+      });
+      document.querySelector("#save-page").addEventListener("click", () => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+          selectedId = null;
+          renderNotes();
+          status.textContent = "Saved";
+          window.setTimeout(() => { status.textContent = ""; }, 2200);
+        } catch (error) {
+          console.error("Could not save page-two notes.", error);
+          status.textContent = "Save failed — check browser storage";
+        }
+      });
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>

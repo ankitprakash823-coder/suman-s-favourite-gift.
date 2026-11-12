@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9dfcc" />
+    <title>Our little love game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="features.css" />
+    <style>
+      :root { color-scheme: light; font-family: "DM Sans",sans-serif; color: #36362f; --theme-color: #58715b; --desk: color-mix(in srgb,var(--theme-color) 12%,#e8dfce); --paper: color-mix(in srgb,var(--theme-color) 5%,#f7f1e4); --script: "Caveat",cursive; background: var(--desk); }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+      .desk { min-height: 100vh; display: grid; place-items: center; padding: 34px clamp(14px,4vw,56px); background: var(--desk); background-image: radial-gradient(ellipse at 18% 22%,rgba(255,255,255,.47),transparent 38%),radial-gradient(ellipse at 84% 78%,rgba(172,151,111,.14),transparent 38%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E"); background-size: auto,auto,190px 190px; }
+      .book { position: relative; width: min(1120px,100%); min-height: min(740px,calc(100vh - 68px)); padding: 34px clamp(24px,6vw,76px) 48px; border: 1px solid rgba(112,95,64,.19); border-radius: 5px 8px 7px 5px; background-color: var(--paper); background-image: linear-gradient(90deg,transparent 49.8%,rgba(126,111,81,.1) 50%,rgba(255,255,255,.38) 50.2%,transparent 50.55%),radial-gradient(ellipse at 5% 10%,rgba(255,255,255,.7),transparent 45%),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.10'/%3E%3C/svg%3E"); background-size: 100% 100%,auto,170px 170px; box-shadow: 0 25px 70px rgba(63,49,28,.2),0 3px 8px rgba(66,52,33,.1),inset 0 0 0 8px rgba(255,255,255,.21); }
+      .book::before { position: absolute; inset: 12px; border: 1px solid rgba(130,113,81,.13); content: ""; pointer-events: none; }
+      .topline { position: relative; z-index: 1; display: flex; justify-content: space-between; color: #666252; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      .topline a { color: inherit; text-decoration: none; }
+      .intro { position: relative; z-index: 1; margin: 34px auto 20px; text-align: center; }
+      .eyebrow { color: #817966; font-size: 9px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; }
+      h1 { margin: 9px 0 2px; color: #47473c; font: 500 clamp(29px,4vw,44px)/1.1 "Playfair Display",Georgia,serif; letter-spacing: -.04em; }
+      .subtitle { color: #718067; font: 24px var(--script); }
+      .scoreboard { position: relative; z-index: 1; display: flex; justify-content: center; gap: 12px; margin: 19px auto; }
+      .score { min-width: 110px; padding: 10px 14px; border: 1px solid rgba(116,94,58,.12); background: color-mix(in srgb,var(--theme-color) 8%,#fffdf6); text-align: center; box-shadow: 0 4px 10px rgba(62,49,30,.08); }
+      .score span { display: block; color: #817966; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+      .score strong { display: block; margin-top: 3px; color: #47473c; font: 600 25px var(--script); }
+      .grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(6,minmax(52px,76px)); gap: 10px; justify-content: center; max-width: 550px; margin: 18px auto; }
+      .card { display: grid; aspect-ratio: 1; place-items: center; border: 1px solid rgba(116,94,58,.16); background: color-mix(in srgb,var(--theme-color) 13%,#f8e9ae); box-shadow: 0 4px 9px rgba(62,49,30,.12); color: #555145; font: 34px var(--script); cursor: pointer; transition: transform 160ms ease,background 160ms ease; }
+      .card:nth-child(4n + 2) { background: color-mix(in srgb,var(--theme-color) 13%,#e4ecdc); }
+      .card:nth-child(4n + 3) { background: color-mix(in srgb,var(--theme-color) 13%,#f4dfdc); }
+      .card:nth-child(4n + 4) { background: color-mix(in srgb,var(--theme-color) 13%,#e2e8ee); }
+      .card:hover:not(:disabled) { transform: translateY(-2px) rotate(-2deg); }
+      .card.flipped,.card.matched { background: color-mix(in srgb,var(--theme-color) 8%,#fffdf6); }
+      .card.matched { cursor: default; opacity: .73; }
+      .game-actions { position: relative; z-index: 1; display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+      .button { padding: 10px 17px; border: 1px solid rgba(105,94,70,.2); background: #fffaf0; color: #5b584b; cursor: pointer; }
+      .button.primary { border-color: var(--theme-color); background: var(--theme-color); color: white; }
+      .message { min-height: 26px; margin-top: 10px; color: #58715b; font: 20px var(--script); text-align: center; }
+      .page-nav { position: fixed; top: 50%; z-index: 5; display: grid; width: 42px; height: 42px; transform: translateY(-50%); place-items: center; border: 1px solid rgba(105,94,70,.23); border-radius: 50%; background: rgba(255,252,244,.9); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 20px; text-decoration: none; }
+      .page-nav.previous { left: max(8px,calc((100% - 1120px)/2 - 54px)); }
+      .page-nav.next { right: max(8px,calc((100% - 1120px)/2 - 54px)); }
+      .theme-control { position: fixed; bottom: 20px; left: 20px; z-index: 10; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(105,94,70,.23); border-radius: 20px; background: rgba(255,252,244,.92); color: #5b584b; box-shadow: 0 3px 12px rgba(64,51,30,.12); font-size: 10px; cursor: pointer; }
+      .theme-control input { width: 19px; height: 19px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+      .save-button { position: fixed; right: 20px; bottom: 20px; z-index: 10; padding: 9px 16px; border: 1px solid rgba(79,102,79,.3); border-radius: 20px; background: var(--theme-color); color: #fffdf6; box-shadow: 0 3px 12px rgba(64,51,30,.16); font-size: 11px; cursor: pointer; }
+      .save-status { position: fixed; right: 112px; bottom: 29px; z-index: 10; color: #5b584b; font-size: 10px; }
+      @media(max-width:600px) { .desk { min-height: 100svh; padding: 12px; } .book { min-height: calc(100svh - 24px); padding: 26px 18px 48px; } .grid { grid-template-columns: repeat(4,minmax(48px,64px)); gap: 8px; } .card { font-size: 29px; } .scoreboard { gap: 6px; } .score { min-width: 90px; padding: 8px; } .score strong { font-size: 22px; } .page-nav { width: 35px; height: 35px; } .page-nav.previous { left: 3px; } .page-nav.next { right: 3px; } }
+    </style>
+  </head>
+  <body>
+    <main class="desk">
+      <label class="theme-control">Page color <input type="color" value="#58715b" aria-label="Change website color" /></label>
+      <a class="page-nav previous" href="third.html" aria-label="Previous page">‹</a>
+      <a class="page-nav next" href="fifth.html" aria-label="Next page">›</a>
+      <article class="book">
+        <header class="topline"><a href="index.html">✿ &nbsp; our little scrapbook</a><span>page four · a tiny game for two</span></header>
+        <section class="intro">
+          <div class="eyebrow">Take turns, take your time</div>
+          <h1>Find our matching little things</h1>
+          <div class="subtitle">a memory match game ✿</div>
+        </section>
+        <section class="scoreboard" aria-label="Game scores">
+          <div class="score"><span>Moves</span><strong id="moves">0</strong></div>
+          <div class="score"><span>Best score</span><strong id="best-score">0</strong></div>
+          <div class="score"><span>Last score</span><strong id="last-score">—</strong></div>
+        </section>
+        <div class="grid" id="game-grid" aria-label="Memory match cards"></div>
+        <div class="message" id="message" aria-live="polite">Find all six pairs. Every match is a little win.</div>
+        <div class="game-actions"><button class="button primary" id="new-game" type="button">Shuffle & play again</button></div>
+      </article>
+    </main>
+    <span class="save-status" id="save-status" role="status"></span>
+    <button class="save-button" id="save-page" type="button">Save page</button>
+    <script>
+      const themePicker = document.querySelector(".theme-control input");
+      themePicker.value = localStorage.getItem("scrapbook-theme") || "#58715b";
+      document.documentElement.style.setProperty("--theme-color", themePicker.value);
+      themePicker.addEventListener("input", (event) => {
+        localStorage.setItem("scrapbook-theme", event.target.value);
+        document.documentElement.style.setProperty("--theme-color", event.target.value);
+      });
+
+      const SCORE_KEY = "scrapbook-game-memory-score";
+      const STATE_KEY = "scrapbook-game-memory-state";
+      const symbols = ["💌", "🌙", "🌷", "☕", "✨", "🍓"];
+      const grid = document.querySelector("#game-grid");
+      let cards = [];
+      let flipped = [];
+      let moves = 0;
+      let locked = false;
+      let finished = false;
+      const saveStatus = document.querySelector("#save-status");
+      const scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{"best":0,"last":0}');
+      document.querySelector("#best-score").textContent = scores.best;
+      document.querySelector("#last-score").textContent = scores.last || "—";
+
+      function shuffle(values) {
+        const result = values.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+      }
+
+      function startGame() {
+        cards = shuffle(symbols.flatMap((symbol, pair) => [
+          { id: `${pair}-a`, symbol, matched: false },
+          { id: `${pair}-b`, symbol, matched: false },
+        ]));
+        flipped = [];
+        moves = 0;
+        locked = false;
+        finished = false;
+        document.querySelector("#moves").textContent = "0";
+        document.querySelector("#message").textContent = "Find all six pairs. Every match is a little win.";
+        render();
+      }
+
+      function render() {
+        grid.replaceChildren();
+        cards.forEach((card, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `card${flipped.includes(index) ? " flipped" : ""}${card.matched ? " matched" : ""}`;
+          button.textContent = flipped.includes(index) || card.matched ? card.symbol : "✿";
+          button.setAttribute("aria-label", flipped.includes(index) || card.matched ? card.symbol : `Hidden card ${index + 1}`);
+          button.disabled = card.matched || locked || finished;
+          button.addEventListener("click", () => reveal(index));
+          grid.append(button);
+        });
+      }
+
+      function reveal(index) {
+        if (locked || finished || cards[index].matched || flipped.includes(index)) return;
+        flipped.push(index);
+        render();
+        if (flipped.length < 2) return;
+        moves += 1;
+        document.querySelector("#moves").textContent = moves;
+        const [first, second] = flipped;
+        if (cards[first].symbol === cards[second].symbol) {
+          cards[first].matched = true;
+          cards[second].matched = true;
+          flipped = [];
+          if (cards.every((card) => card.matched)) finishGame();
+          render();
+        } else {
+          locked = true;
+          window.setTimeout(() => { flipped = []; locked = false; render(); }, 750);
+        }
+      }
+
+      function finishGame() {
+        finished = true;
+        const score = Math.max(100, 1000 - Math.max(0, moves - symbols.length) * 50);
+        scores.last = score;
+        scores.best = Math.max(scores.best, score);
+        localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+        document.querySelector("#last-score").textContent = score;
+        document.querySelector("#best-score").textContent = scores.best;
+        document.querySelector("#message").textContent = `All pairs found in ${moves} moves — ${score} points. You make a great team!`;
+      }
+
+      function saveGame() {
+        try {
+          localStorage.setItem(STATE_KEY, JSON.stringify({
+            cards,
+            flipped: flipped.length < 2 ? flipped : [],
+            moves,
+            finished,
+          }));
+          localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+          saveStatus.textContent = "Saved";
+        } catch (error) {
+          console.error("Could not save the memory game.", error);
+          saveStatus.textContent = "Save failed — check browser storage";
+        }
+      }
+
+      function restoreGame() {
+        const saved = localStorage.getItem(STATE_KEY);
+        if (!saved) return false;
+        try {
+          const state = JSON.parse(saved);
+          const validCards = Array.isArray(state.cards)
+            && state.cards.length === symbols.length * 2
+            && state.cards.every((card) => symbols.includes(card.symbol) && typeof card.matched === "boolean");
+          if (!validCards || !Number.isInteger(state.moves) || state.moves < 0) {
+            throw new Error("Saved memory game data has an invalid shape.");
+          }
+          cards = state.cards;
+          flipped = Array.isArray(state.flipped)
+            ? state.flipped.filter((index) => Number.isInteger(index) && index >= 0 && index < cards.length && !cards[index].matched).slice(0, 1)
+            : [];
+          moves = state.moves;
+          finished = state.finished === true && cards.every((card) => card.matched);
+          document.querySelector("#moves").textContent = moves;
+          document.querySelector("#message").textContent = finished
+            ? "Your saved game is complete. You make a great team!"
+            : "Your saved game is ready to continue.";
+          render();
+          return true;
+        } catch (error) {
+          console.error("Could not restore the saved memory game.", error);
+          saveStatus.textContent = "Could not restore saved game";
+          return false;
+        }
+      }
+
+      document.querySelector("#save-page").addEventListener("click", saveGame);
+      document.querySelector("#new-game").addEventListener("click", () => {
+        localStorage.removeItem(STATE_KEY);
+        startGame();
+      });
+      if (!restoreGame()) startGame();
+    </script>
+    <script src="features.js"></script>
+  </body>
+</html>
